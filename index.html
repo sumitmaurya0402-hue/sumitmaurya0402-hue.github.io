@@ -1,0 +1,1126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sumit Maurya · Indie Game Developer &amp; Game UI Designer</title>
+<meta name="description" content="Sumit Maurya, indie game developer and 2D game / UI designer from Ahmedabad. Founder of FunMint Games. Game UI, 2D art and mobile games on Google Play.">
+<meta name="theme-color" content="#0D1828">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Sumit Maurya · Indie Game Developer &amp; Game UI Designer">
+<meta property="og:description" content="Game UI, 2D art and my own mobile games under FunMint Games. 5 games, 52 screens of UI work.">
+<meta property="og:image" content="https://sumitmaurya0402-hue.github.io/og.png">
+<meta property="og:url" content="https://sumitmaurya0402-hue.github.io/">
+<meta name="twitter:card" content="summary_large_image">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: a puzzle game at night. Floating puzzle blocks drift behind everything (canvas); hero = player card with spotlight; career = level map; games = store cards. Dark-first. */
+:root{
+  --bg:#0D1828; --bg-2:#112238; --surface:#152A44; --surface-2:#1B3555; --ink:#F5F0E8; --muted:#A3B4C8; --line:#25415F;
+  --gold:#FF6A14; --gold-ink:#1A0800; --gold-text:#FF8A3D; --mint:#4FE3C1; --mint-ink:#062A22; --name:#FF6A14; --name-shade:#A83A00; --wall:#1B2D48; --wall-2:#15253C; --wain:#173B3B; --wain-line:#0F2C2C; --floor:#3B2B22; --floor-line:#2C1F18; --wood:#7A5236; --wood-2:#553826; --sky:#0A1530; --sky-2:#22366A; --curtain:#5E4B3D; --lamp:rgba(255,140,60,.20); --night:1; --day:0; --screen:#0B1220;
+  --tile-a:255,106,20; --tile-b:79,227,193; --tile-c:120,160,255; --tile-alpha:.16;
+  --shadow:0 8px 0 rgba(0,0,0,.28);
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --fs-h1:clamp(54px,8.4vw,112px); --fs-h2:clamp(32px,4.4vw,52px); --fs-h3:22px; --fs-lead:clamp(21px,2.3vw,28px); --fs-body:17px; --fs-small:14px; --fs-label:12px;
+  --pop:cubic-bezier(.34,1.56,.64,1); --smooth:cubic-bezier(.2,.7,.2,1);
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg:#E6EEF6; --bg-2:#D9E5F0; --surface:#FFFFFF; --surface-2:#F1F6FB; --ink:#0F1F35; --muted:#4A5D75; --line:#C9D7E5;
+  --gold:#FF6A14; --gold-ink:#1A0800; --gold-text:#B84300; --mint:#12A586; --mint-ink:#FFFFFF; --name:#FE5A02; --name-shade:#B33E00; --wall:#E3EAF2; --wall-2:#D2DCE8; --wain:#BCD8CF; --wain-line:#9FC4B7; --floor:#BE9068; --floor-line:#A17550; --wood:#8A5E3B; --wood-2:#6C4930; --sky:#86C2F0; --sky-2:#D3ECFC; --curtain:#D8C2A3; --lamp:rgba(255,140,60,0); --night:0; --day:1; --screen:#0F1A2E;
+  --tile-a:255,106,20; --tile-b:18,165,134; --tile-c:70,110,230; --tile-alpha:.18;
+  --shadow:0 8px 0 #C3D2E1; color-scheme:light}}
+:root[data-theme="light"]{
+  --bg:#E6EEF6; --bg-2:#D9E5F0; --surface:#FFFFFF; --surface-2:#F1F6FB; --ink:#0F1F35; --muted:#4A5D75; --line:#C9D7E5;
+  --gold:#FF6A14; --gold-ink:#1A0800; --gold-text:#B84300; --mint:#12A586; --mint-ink:#FFFFFF; --name:#FE5A02; --name-shade:#B33E00; --wall:#E3EAF2; --wall-2:#D2DCE8; --wain:#BCD8CF; --wain-line:#9FC4B7; --floor:#BE9068; --floor-line:#A17550; --wood:#8A5E3B; --wood-2:#6C4930; --sky:#86C2F0; --sky-2:#D3ECFC; --curtain:#D8C2A3; --lamp:rgba(255,140,60,0); --night:0; --day:1; --screen:#0F1A2E;
+  --tile-a:255,106,20; --tile-b:18,165,134; --tile-c:70,110,230; --tile-alpha:.18;
+  --shadow:0 8px 0 #C3D2E1; color-scheme:light}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(120% 80% at 80% 0%,var(--bg-2),var(--bg) 60%) fixed,var(--bg);color:var(--ink);
+  font:500 17px/1.6 var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+#world{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.page{position:relative;z-index:1}
+.wrap{max-width:1160px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--mint);outline-offset:3px;border-radius:12px}
+h1,h2,h3{font-family:var(--display);font-weight:700;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.label{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+/* buttons */
+.btn{appearance:none;border:0;cursor:pointer;font:700 15px/1 var(--body);min-height:48px;padding:0 22px;border-radius:14px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;transition:transform .1s ease,filter .15s ease}
+.btn:active{transform:scale(.95)}
+.btn:hover{filter:brightness(1.07)}
+.btn-gold{background:var(--gold);color:var(--gold-ink);box-shadow:inset 0 -4px 0 rgba(0,0,0,.2)}
+.btn-ghost{background:color-mix(in srgb,var(--surface) 70%,transparent);color:var(--ink);border:2px solid var(--line)}
+.icon-btn{width:48px;padding:0;background:var(--surface-2);color:var(--ink);border:2px solid var(--line)}
+.icon-btn svg{width:20px;height:20px}
+.icon-btn:disabled{opacity:.35;cursor:default;transform:none}
+
+/* HUD */
+.hud{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;padding-block:12px}
+.hud-in{display:flex;align-items:center;gap:12px;background:color-mix(in srgb,var(--surface) 82%,transparent);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:2px solid var(--line);border-radius:18px;padding:8px 8px 8px 10px}
+.badge{width:44px;height:44px;flex:none;border-radius:12px;background:var(--gold);color:var(--gold-ink);
+  display:grid;place-items:center;font:800 15px/1 var(--display);box-shadow:inset 0 -4px 0 rgba(0,0,0,.2)}
+.xp{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.xp-top{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.xp-name{font:700 15px/1 var(--display)}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;max-width:240px}
+.bar i{display:block;height:100%;width:80%;border-radius:inherit;background:var(--mint);animation:fill 1.2s var(--smooth) both}
+@keyframes fill{from{width:0}}
+
+/* HERO */
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:32px;align-items:end;padding-block:36px 8px}
+.hero-copy{display:flex;flex-direction:column;gap:22px;min-width:0;padding-bottom:40px}
+.status{display:inline-flex;align-items:center;gap:10px;align-self:flex-start;background:color-mix(in srgb,var(--surface) 80%,transparent);
+  border:2px solid var(--line);border-radius:99px;padding:9px 14px}
+.status .dot{width:9px;height:9px;border-radius:50%;background:var(--mint);animation:ping 1.8s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--mint) 60%,transparent)}100%{box-shadow:0 0 0 9px transparent}}
+.status time{font:600 12px/1 var(--mono);letter-spacing:.08em;color:var(--muted);font-variant-numeric:tabular-nums}
+.hero h1{font-size:clamp(48px,8.2vw,104px);line-height:.95;font-weight:800;letter-spacing:-.03em}
+.hero h1 .gold{color:var(--name);text-shadow:0 .06em 0 var(--name-shade)}
+.lede{font:700 clamp(22px,2.6vw,30px)/1.3 var(--body);max-width:24ch;margin:0;letter-spacing:-.01em}
+.lede em{font-style:normal;color:var(--mint)}
+.sub{color:var(--muted);max-width:50ch;margin:0;font-size:17px}
+.ctas{display:flex;gap:12px;flex-wrap:wrap}
+.stats{display:flex;gap:28px;flex-wrap:wrap;padding-top:18px;border-top:2px dashed var(--line)}
+.stat{display:flex;flex-direction:column;gap:6px;min-width:0}
+.stat b{font:700 30px/1 var(--display);font-variant-numeric:tabular-nums}
+.stat span{font-size:14px;color:var(--muted)}
+
+/* player card */
+.player{position:relative;justify-self:center;width:min(100%,460px);aspect-ratio:46/56}
+.spot{position:absolute;left:50%;top:10%;width:92%;aspect-ratio:1;translate:-50% 0;border-radius:50%;
+  background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--gold) 55%,transparent),color-mix(in srgb,var(--gold) 0%,transparent) 68%)}
+.disc{position:absolute;left:50%;top:16%;width:76%;aspect-ratio:1;translate:-50% 0;border-radius:50%;background:linear-gradient(160deg,#FF8C42,#F2540A);
+  box-shadow:inset 0 -14px 0 rgba(0,0,0,.14)}
+.player img.photo{position:absolute;left:50%;bottom:0;height:94%;width:auto;max-width:none;translate:-50% 0;
+  filter:drop-shadow(0 18px 24px rgba(0,0,0,.35))}
+.fade{position:absolute;left:-10%;right:-10%;bottom:0;height:18%;background:linear-gradient(transparent,var(--bg));pointer-events:none}
+.tag{position:absolute;left:0;top:6%;z-index:2;background:var(--ink);color:var(--bg);font:600 12px/1 var(--mono);
+  letter-spacing:.14em;padding:10px 12px;border-radius:10px;rotate:-6deg;box-shadow:var(--shadow)}
+.chip-float{position:absolute;z-index:2;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:8px 14px 8px 8px;
+  display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);animation:bob 4s ease-in-out infinite}
+.chip-float b{font:700 18px/1 var(--display)}
+.chip-float span{font:600 11px/1.3 var(--mono);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.chip-float.c1{right:-2%;top:30%}
+.chip-float.c2{left:-4%;top:58%;animation-delay:-2s}
+.chip-float .ci{flex:none;width:40px;height:40px;border-radius:10px;max-width:none;display:block}
+.chip-float .ci.round{border-radius:50%;background:#fff}
+.chip-float .ct{display:flex;flex-direction:column;gap:4px;white-space:nowrap}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* sections */
+section{padding-block:64px}
+.head{display:flex;flex-direction:column;gap:12px;margin-bottom:28px}
+.head h2{font-size:clamp(32px,4.6vw,50px);line-height:1.05;letter-spacing:-.02em}
+.head p{color:var(--muted);margin:0;max-width:56ch}
+
+/* level map */
+.map{background:var(--surface);border:2px solid var(--line);border-radius:24px;box-shadow:var(--shadow);overflow:hidden}
+.board{position:relative;aspect-ratio:1000/460;max-width:100%;
+  background:radial-gradient(color-mix(in srgb,var(--line) 70%,transparent) 1.5px,transparent 1.6px) 0 0/26px 26px,
+             radial-gradient(90% 70% at 50% 40%,var(--surface-2),var(--surface))}
+#mapSvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.road{fill:none;stroke:var(--bg);stroke-width:30;stroke-linecap:round;stroke-linejoin:round}
+.road-edge{fill:none;stroke:var(--line);stroke-width:36;stroke-linecap:round;stroke-linejoin:round}
+.road-done{fill:none;stroke:var(--gold);stroke-width:6;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:0;animation:draw 1.4s var(--smooth) .2s both}
+.road-next{fill:none;stroke:var(--muted);stroke-width:4;stroke-linecap:round;stroke-dasharray:2 14;opacity:.6}
+@keyframes draw{from{stroke-dashoffset:100}}
+
+.lvl{position:absolute;translate:-50% -50%;display:flex;flex-direction:column;align-items:center;gap:10px;width:0}
+.node{position:relative;flex:none;display:grid;place-items:center;padding:0;width:60px;height:60px;border-radius:50%;border:0;cursor:pointer;
+  background:var(--mint);color:var(--mint-ink);font:800 22px/1 var(--display);
+  box-shadow:inset 0 -5px 0 rgba(0,0,0,.2),0 0 0 6px var(--surface),0 0 0 8px var(--line);
+  transition:transform .2s var(--pop),box-shadow .2s ease}
+.node:hover{transform:scale(1.06)}
+.node:active{transform:scale(.95)}
+.node[aria-pressed="true"]{box-shadow:inset 0 -5px 0 rgba(0,0,0,.2),0 0 0 6px var(--surface),0 0 0 9px var(--ink)}
+.node.now{width:72px;height:72px;font-size:26px;background:var(--gold);color:var(--gold-ink)}
+.node.now::before{content:"";position:absolute;inset:-14px;border-radius:50%;background:color-mix(in srgb,var(--gold) 35%,transparent);z-index:-1;animation:glow 2.2s ease-in-out infinite}
+@keyframes glow{0%,100%{opacity:.35;transform:scale(.9)}50%{opacity:.8;transform:scale(1.05)}}
+.node.lock{cursor:default;background:var(--surface);color:var(--muted);border:3px dashed var(--muted);box-shadow:0 0 0 6px var(--surface)}
+.node.lock:hover,.node.lock:active{transform:none}
+.node.lock svg{width:22px;height:22px}
+.plate{position:absolute;top:calc(100% + 12px);left:50%;translate:-50% 0;white-space:nowrap;text-align:center;
+  background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:8px 12px;display:flex;flex-direction:column;gap:4px;
+  box-shadow:0 4px 0 color-mix(in srgb,var(--line) 70%,transparent);pointer-events:none}
+.plate b{font:700 13px/1.1 var(--display)}
+.plate.has-face{flex-direction:row;align-items:center;gap:10px;text-align:left;padding:6px 12px 6px 6px}
+.plate .face{width:40px;height:40px;border-radius:50%;flex:none;background:url(face.webp) center/cover #1B2D4D;box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--gold)}
+.plate .txt{display:flex;flex-direction:column;gap:4px}
+.plate span{font:600 11px/1 var(--mono);color:var(--muted);letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.plate .stars{color:var(--gold);letter-spacing:2px;font-size:11px}
+.lvl.is-now .plate{border-color:var(--gold)}
+.lvl.is-lock .plate{border-style:dashed;background:transparent;box-shadow:none}
+.lvl.side-t .plate{top:auto;bottom:calc(100% + 14px)}
+.lvl.side-r .plate{top:50%;left:calc(100% + 0px);translate:46px -50%;text-align:left}
+.lvl.side-l .plate{top:50%;left:auto;right:0;translate:-46px -50%;text-align:right}
+.pin{position:absolute;left:50%;bottom:calc(100% + 22px);translate:-50% 0;width:48px;height:48px;border-radius:50%;
+  border:3px solid var(--gold);background:url(face.webp) center/cover var(--gold);box-shadow:0 6px 14px rgba(0,0,0,.3);
+  pointer-events:none;animation:hover 2.4s ease-in-out infinite}
+.pin::after{content:"";position:absolute;left:50%;top:100%;translate:-50% 1px;border:7px solid transparent;border-top-color:var(--gold)}
+@keyframes hover{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+.card{display:grid;grid-template-columns:56px 1fr auto;gap:18px;align-items:start;border-top:2px solid var(--line);padding:22px 24px}
+.card .ico{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:var(--mint);color:var(--mint-ink);box-shadow:inset 0 -4px 0 rgba(0,0,0,.18)}
+.card .ico.now{background:var(--gold);color:var(--gold-ink)}
+.card .ico svg{width:28px;height:28px}
+.card .ico.logo{border-radius:50%;background:#FFFFFF url(funmint-logo.webp) center/104% no-repeat;box-shadow:none}
+.studio{display:flex;align-items:center;gap:14px}
+.logo-tile{flex:none;width:64px;height:64px;border-radius:50%;background:#FFFFFF url(funmint-logo.webp) center/104% no-repeat}
+.studio .txt{display:flex;flex-direction:column;gap:6px}
+.studio b{font:700 18px/1 var(--display)}
+
+.card-txt{min-width:0;display:flex;flex-direction:column;gap:6px}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.eyebrow .live{color:var(--gold-text)}
+.card h3{font-size:24px;line-height:1.15}
+.card .meta{font:600 14px/1.4 var(--body);color:var(--ink)}
+.card .meta span{color:var(--muted);font-weight:500}
+.card p{margin:2px 0 0;color:var(--muted);max-width:60ch}
+.skills{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.skills span{font:600 12px/1 var(--mono);letter-spacing:.04em;padding:8px 10px;border-radius:8px;background:var(--surface-2);border:1.5px solid var(--line)}
+.nav-lv{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.nav-lv .count{font:700 14px/1 var(--display);color:var(--muted);font-variant-numeric:tabular-nums}
+.steps{display:flex;gap:8px}
+.card-enter{animation:pop .25s var(--pop)}
+@keyframes pop{from{transform:translateY(6px);opacity:.3}}
+
+/* games */
+.games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.game{background:var(--surface);border:2px solid var(--line);border-radius:24px;box-shadow:var(--shadow);overflow:hidden;
+  display:flex;flex-direction:column;text-decoration:none;transition:transform .25s var(--pop)}
+.game:hover{transform:translateY(-5px)}
+.game:active{transform:scale(.98)}
+.art{aspect-ratio:1024/500;overflow:hidden;border-bottom:2px solid var(--line);background:var(--surface-2)}
+.art img{display:block;width:100%;height:100%;object-fit:cover;max-width:100%;transition:transform .4s var(--smooth)}
+.game:hover .art img{transform:scale(1.04)}
+.game-body{padding:20px 22px 22px;display:flex;flex-direction:column;gap:12px}
+.game-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.game h3{font-size:24px;line-height:1.1}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font:600 12px/1 var(--mono);letter-spacing:.06em;padding:8px 10px;border-radius:8px;border:2px solid var(--line);font-variant-numeric:tabular-nums}
+.chip.hot{background:var(--gold);color:var(--gold-ink);border-color:transparent}
+.chip.new{background:var(--mint);color:var(--mint-ink);border-color:transparent}
+.game p{margin:0;color:var(--muted)}
+.game .go{font-weight:700;color:var(--gold-text)}
+
+
+/* coming soon */
+.soon-head{display:flex;align-items:center;gap:12px;margin:44px 0 18px}
+.soon-head h3{font-size:22px}
+.soon-head .count{font:600 12px/1 var(--mono);letter-spacing:.1em;padding:7px 9px;border-radius:8px;background:var(--surface-2);border:2px solid var(--line);color:var(--muted)}
+.soon{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.soon-card{background:var(--surface);border:2px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column}
+.soon-card .art{position:relative}
+.soon-card .art::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 45%,rgba(5,10,20,.55))}
+.ribbon{position:absolute;left:10px;bottom:10px;z-index:1;display:inline-flex;align-items:center;gap:6px;background:var(--ink);color:var(--bg);
+  font:600 11px/1 var(--mono);letter-spacing:.12em;padding:7px 9px;border-radius:8px}
+.ribbon svg{width:12px;height:12px}
+.soon-body{padding:16px 20px 18px;display:flex;flex-direction:column;gap:8px}
+.soon-body h4{margin:0;font:700 16px/1.2 var(--display);letter-spacing:-.01em}
+.soon-body .meta{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+.soon-body .genre{font:600 11px/1 var(--mono);letter-spacing:.06em;padding:6px 8px;border-radius:7px;border:1.5px solid var(--line);color:var(--muted)}
+.soon-body .where{font-size:13px;color:var(--muted)}
+
+/* skills inventory */
+.inv{display:grid;grid-template-columns:1.1fr 2fr;gap:18px}
+.legend{position:relative;background:var(--surface);border:2px solid var(--gold);border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:16px;
+  box-shadow:var(--shadow);overflow:hidden}
+.legend::before{content:"";position:absolute;right:-30%;top:-30%;width:90%;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle,color-mix(in srgb,var(--gold) 28%,transparent),transparent 65%);pointer-events:none}
+.legend .rar{align-self:flex-start;font:600 11px/1 var(--mono);letter-spacing:.14em;padding:7px 9px;border-radius:7px;background:var(--gold);color:var(--gold-ink)}
+.legend img{width:96px;height:96px;border-radius:22px;max-width:100%;box-shadow:0 10px 24px rgba(0,0,0,.3)}
+.legend h3{font-size:26px;line-height:1.1}
+.legend p{margin:0;color:var(--muted)}
+.lvbar{display:flex;flex-direction:column;gap:8px}
+.lvbar .row{display:flex;justify-content:space-between;font:600 12px/1 var(--mono);letter-spacing:.08em;color:var(--muted)}
+.lvbar .track{height:10px;border-radius:99px;background:var(--line);overflow:hidden}
+.lvbar .track i{display:block;height:100%;width:100%;background:var(--gold);border-radius:inherit}
+.slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.slot{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.slot .si{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--surface-2);color:var(--mint);border:1.5px solid var(--line)}
+.slot .si svg{width:22px;height:22px}
+.slot b{font:700 15px/1.25 var(--display)}
+.slot span{font-size:14px;color:var(--muted);line-height:1.45}
+.langs{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:18px}
+.langs .label{margin-right:4px}
+.langs span.l{font:600 13px/1 var(--body);padding:9px 12px;border-radius:10px;background:var(--surface);border:2px solid var(--line)}
+
+/* education */
+.edu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.edu-card{background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:20px;display:grid;grid-template-columns:52px 1fr;gap:16px;align-items:start}
+.edu-card .badge-e{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:var(--surface-2);border:1.5px solid var(--line);color:var(--gold-text)}
+.edu-card .badge-e svg{width:26px;height:26px}
+.edu-card .eyebrow{display:block;margin-bottom:8px}
+.edu-card h3{font-size:20px;line-height:1.2}
+.edu-card p{margin:6px 0 0;color:var(--muted)}
+
+/* contact */
+.contact{padding-block:72px 140px}
+.contact-box{background:var(--surface);border:2px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:clamp(22px,4vw,44px);
+  display:grid;grid-template-columns:1.1fr 1fr;gap:32px;align-items:center}
+.contact-box h2{font-size:clamp(30px,4.4vw,48px);line-height:1.05;letter-spacing:-.02em}
+.contact-box .lead{color:var(--muted);margin:14px 0 0;max-width:46ch}
+.free{display:inline-flex;align-items:center;gap:8px;margin-top:18px;font:600 13px/1.3 var(--body);color:var(--ink);background:var(--surface-2);border:1.5px solid var(--line);padding:9px 12px;border-radius:10px}
+.free i{width:8px;height:8px;border-radius:50%;background:var(--mint);flex:none}
+.links{flex-direction:column;gap:12px;min-width:0}
+.lnk{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:16px;border:2px solid var(--line);background:var(--surface-2);text-decoration:none;
+  min-height:64px;transition:transform .2s var(--pop),border-color .2s ease}
+.lnk:hover{transform:translateY(-2px);border-color:var(--gold)}
+.lnk:active{transform:scale(.98)}
+.lnk .li{width:40px;height:40px;flex:none;border-radius:11px;display:grid;place-items:center;font:800 15px/1 var(--display)}
+.lnk .txt{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
+.lnk b{font:700 15px/1.2 var(--body)}
+.lnk small{font:600 12px/1.3 var(--mono);color:var(--muted);overflow-wrap:anywhere}
+.lnk .arrow{color:var(--muted);font-weight:700}
+.li.be{background:#1769FF;color:#fff}
+.li.wa{background:#25D366}.li.wa svg{width:24px;height:24px}
+.li.cv{background:#F7F3EC;color:#14213A}
+.li.ln{background:#0A66C2;color:#fff}
+.li.img{padding:0;background:transparent;object-fit:contain;max-width:none}
+.mail-line{text-align:center;color:var(--muted);font-size:15px;margin:22px 0 0}
+.mail-line span{color:var(--ink);font-weight:700;user-select:all}
+.li.gp{background:var(--mint);color:var(--mint-ink)}
+.li.em{background:var(--gold);color:var(--gold-ink)}
+.copy{appearance:none;border:2px solid var(--line);background:var(--surface);color:var(--ink);font:700 13px/1 var(--body);min-height:44px;padding:0 14px;border-radius:12px;cursor:pointer}
+.copy:active{transform:scale(.95)}
+.end{text-align:center;color:var(--muted);font-size:14px;margin-top:36px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.end .logo-tile{width:56px;height:56px}
+
+
+.dock{position:fixed;left:50%;translate:-50% 0;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:25;
+  display:flex;gap:4px;padding:6px;background:color-mix(in srgb,var(--surface) 85%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:2px solid var(--line);border-radius:18px;box-shadow:0 12px 30px rgba(0,0,0,.3)}
+.dock a{min-height:44px;min-width:44px;padding:0 18px;display:grid;place-items:center;border-radius:12px;color:var(--ink);
+  font:700 14px/1 var(--body);text-decoration:none;transition:background .2s ease,color .2s ease}
+.dock a.on{background:var(--gold);color:var(--gold-ink)}
+
+
+/* ===== Typography system =====
+   Unbounded: h1, h2, big numbers only. Manrope: everything else. Mono: small uppercase labels + clock only. */
+.hero h1{font-size:var(--fs-h1);line-height:.92;letter-spacing:-.035em}
+.head h2,.contact-head h2{font:700 var(--fs-h2)/1.04 var(--display);letter-spacing:-.03em}
+.lede{font:700 var(--fs-lead)/1.28 var(--body);letter-spacing:-.015em;max-width:22ch}
+.sub,.head p,.contact-head .lead{font:500 var(--fs-body)/1.65 var(--body);color:var(--muted);max-width:52ch}
+h3,h4,.game h3,.soon-body h4,.card h3,.legend h3,.edu-card h3{font-family:var(--body);font-weight:800;letter-spacing:-.015em}
+.game h3,.card h3,.legend h3{font-size:var(--fs-h3);line-height:1.2}
+.soon-body h4,.edu-card h3{font-size:19px;line-height:1.25}
+.soon-head h3{font:800 var(--fs-h3)/1.2 var(--body)}
+.slot b,.plate b,.xp-name,.studio b,.chip-float b{font-family:var(--body);font-weight:800;letter-spacing:-.01em}
+.slot b{font-size:16px}.plate b{font-size:14px}.xp-name{font-size:15px}.studio b{font-size:18px}.chip-float b{font-size:16px}
+.chip,.genre,.skills span,.plate span,.chip-float span,.lnk small,.soon-head .count{font-family:var(--body)!important;font-weight:700!important;letter-spacing:.01em!important;text-transform:none!important}
+.chip,.genre,.skills span{font-size:13px!important}
+.plate span,.chip-float span,.lnk small{font-size:12.5px!important}
+.card .meta{font:700 15px/1.4 var(--body)}
+.card p,.game p,.slot span,.edu-card p,.legend p{font-size:16px;line-height:1.6}
+.stat b{font:700 clamp(26px,2.6vw,32px)/1 var(--display);letter-spacing:-.02em}
+.stat span{font:600 var(--fs-small)/1.3 var(--body)}
+.label,.eyebrow{font:600 var(--fs-label)/1 var(--mono);letter-spacing:.14em;text-transform:uppercase}
+.btn{font:800 15px/1 var(--body);letter-spacing:.01em}
+
+/* ===== Contact room ===== */
+.contact{padding-block:72px 120px}
+.contact-head{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:end;margin-bottom:28px}
+.contact-head .free{justify-self:end}
+.room{position:relative;container-type:inline-size;aspect-ratio:16/9;max-width:100%;border-radius:28px;overflow:hidden;border:2px solid var(--line);box-shadow:var(--shadow);background:var(--wall)}
+.room svg.art{position:absolute;inset:0;width:100%;height:100%;display:block}
+.w{fill:var(--wall)} .w2{fill:var(--wall-2)} .wn{fill:var(--wain)} .wl{fill:none;stroke:var(--wain-line);stroke-width:4}
+.fl{fill:var(--floor)} .fll{stroke:var(--floor-line);stroke-width:3} .wd{fill:var(--wood)} .wd2{fill:var(--wood-2)}
+.cur{fill:var(--curtain)} .sk{fill:url(#skyG)} .night{opacity:var(--night)} .day{opacity:var(--day)}
+.lampc{fill:var(--lamp)} .scr{fill:var(--screen)} .gl{fill:var(--gold)} .mn{fill:var(--mint)} .ink{fill:var(--ink)} .mt{fill:var(--muted)}
+.bulb{fill:var(--gold);animation:twinkle 2.6s ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:1}50%{opacity:.45}}
+.leaf{fill:#3E9E6E}.leaf2{fill:#2F7F57}.pot{fill:#C8693E}
+.frame{position:absolute;display:flex;flex-direction:column;align-items:center;gap:1.1cqw;text-decoration:none;color:var(--ink);transform-origin:50% -2cqw;
+  transition:transform .25s var(--pop)}
+.frame:hover{transform:rotate(-3deg) translateY(-.3cqw)}
+.frame:active{transform:scale(.95)}
+.frame .fr{width:100%;aspect-ratio:1;border-radius:.6cqw;background:var(--wood);padding:.75cqw;box-shadow:0 .7cqw 1.2cqw rgba(0,0,0,.28),inset 0 -.3cqw 0 rgba(0,0,0,.25)}
+.frame .mat{width:100%;height:100%;border-radius:.3cqw;background:#F7F3EC;display:grid;place-items:center;overflow:hidden}
+.frame .mat img{width:62%;height:62%;object-fit:contain;max-width:none}
+.frame .mat.be{background:#1769FF;color:#fff;font:800 4.4cqw/1 var(--body);letter-spacing:-.04em}
+.frame .mat.cv{color:#14213A;font:800 3.3cqw/1 var(--body);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5cqw}
+.frame .fr{overflow:hidden}
+.frame .mat.cv i{display:block;width:4.6cqw;height:.35cqw;border-radius:9px;background:#B7C3D3}
+.frame .mat.wa{background:#25D366}
+.frame .mat.li-in{background:#0A66C2;color:#fff;font:800 4.2cqw/1 var(--body);letter-spacing:-.03em}
+.frame .mat.wa svg{width:56%;height:56%}
+.frame .tagx{font:800 1.15cqw/1 var(--body);background:var(--surface);border:.15cqw solid var(--line);padding:.55cqw .8cqw;border-radius:.6cqw;white-space:nowrap}
+.frame::before{content:"";position:absolute;top:-2.4cqw;left:50%;width:5cqw;height:2.6cqw;translate:-50% 0;
+  background:linear-gradient(to top right,transparent calc(50% - 1px),var(--muted) 50%,transparent calc(50% + 1px)) left/50% 100% no-repeat,
+             linear-gradient(to top left,transparent calc(50% - 1px),var(--muted) 50%,transparent calc(50% + 1px)) right/50% 100% no-repeat;opacity:.7}
+.screen{position:absolute;left:38.75%;top:38.4%;width:22.5%;height:21.6%;border-radius:.6cqw;overflow:hidden;display:flex;flex-direction:column;
+  background:linear-gradient(160deg,#13213A,#0A1222);color:#F5F0E8;padding:1cqw 1.2cqw;gap:.6cqw;cursor:pointer;border:0;text-align:left}
+.screen .bar2{display:flex;justify-content:space-between;align-items:center;font:600 .95cqw/1 var(--mono);letter-spacing:.12em;color:#A3B4C8}
+.screen .bar2 b{color:var(--gold);font:600 1.5cqw/1 var(--mono);letter-spacing:.05em}
+.screen .grid{flex:1;display:grid;grid-template-columns:repeat(7,1fr);gap:.4cqw;align-content:end}
+.screen .grid i{display:block;aspect-ratio:1;border-radius:.35cqw;background:#1E2E4C;transition:background .2s ease,transform .25s var(--pop)}
+.screen .grid i.g{background:#B79CFF}.screen .grid i.m{background:#4FE3C1}.screen .grid i.o{background:#FF6A14}.screen .grid i.b{background:#6F93FF}
+.screen .grid i.hit{transform:scale(1.25)}
+.screen .hint{font:700 1cqw/1 var(--body);color:#A3B4C8;text-align:center}
+.pad{position:absolute;left:56.25%;top:60.9%;width:6.9%;height:5.3%;border:0;padding:0;cursor:pointer;background:none}
+.pad svg{width:100%;height:100%;display:block;transition:transform .1s ease}
+.pad:active svg{transform:scale(.92)}
+.plus{position:absolute;font:800 1.6cqw/1 var(--display);color:var(--gold);pointer-events:none;animation:rise .7s var(--smooth) forwards;text-shadow:0 .2cqw 0 rgba(0,0,0,.3)}
+@keyframes rise{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-4cqw)}}
+.clock-hand{transform-origin:1300px 175px;transition:transform .3s var(--pop)}
+.links{display:none}
+.end{text-align:center;color:var(--muted);font-size:14px;margin-top:36px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.end .logo-tile{width:56px;height:56px}
+
+/* ===== Panel polish v11 ===== */
+.text-link{align-self:center;font:700 15px/1 var(--body);color:var(--muted);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px;padding:14px 4px}
+.text-link:hover{color:var(--ink)}
+.go-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.plat{display:inline-flex;align-items:center;gap:6px;font:700 13px/1 var(--body);color:var(--muted)}
+.plat img{width:16px;height:16px;max-width:none}
+.soon-body .meta{margin-top:2px}
+.soon-body .where{display:inline-flex;align-items:center;gap:6px;font:700 13px/1 var(--body)}
+.soon-body .where img{width:14px;height:14px;max-width:none}
+.made{display:flex;flex-wrap:wrap;gap:8px;position:relative}
+.made span{font:700 13px/1 var(--body);padding:8px 10px;border-radius:9px;background:color-mix(in srgb,var(--gold) 14%,var(--surface));border:1.5px solid color-mix(in srgb,var(--gold) 40%,var(--line))}
+.legend .lvbar{margin-top:auto}
+.slot{position:relative;transition:transform .2s var(--pop),border-color .2s ease}
+.slot:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--accent-s) 60%,var(--line))}
+.slot .si{width:48px;height:48px;border-radius:14px;border:0;background:var(--accent-s);color:var(--accent-ink);box-shadow:inset 0 -4px 0 rgba(0,0,0,.18)}
+.slot .si svg{width:24px;height:24px}
+.slot.c-o{--accent-s:var(--gold);--accent-ink:var(--gold-ink)}
+.slot.c-m{--accent-s:var(--mint);--accent-ink:var(--mint-ink)}
+.slot.c-b{--accent-s:#6F93FF;--accent-ink:#0A1530}
+.slot-link{margin-top:auto;font:800 14px/1 var(--body);color:var(--gold-text);text-decoration:none;padding-top:6px}
+.slot-link:hover{text-decoration:underline}
+.subhead{display:flex;flex-direction:column;gap:10px;margin:56px 0 18px}
+.subhead h3{font:800 28px/1.1 var(--body);letter-spacing:-.02em}
+.card .ico.logo{box-shadow:0 0 0 2px var(--line)}
+@media (max-width:560px){
+  .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  .stat b{font-size:20px;white-space:nowrap}
+  .stat span{font-size:12.5px}
+  .ctas .btn{flex:1 1 auto}
+  .text-link{width:100%;text-align:center;padding:8px}
+}
+
+/* ===== UI work case files ===== */
+.cases{display:flex;flex-direction:column;gap:26px}
+.case{position:relative;border-radius:28px;overflow:hidden;border:2px solid var(--line);box-shadow:var(--shadow);min-height:440px;isolation:isolate;color:#F5F0E8}
+.case.t-sky{--c1:#0E3A7A;--c2:#1C64C9;--acc:#7FD1FF;background:#1C64C9}
+.case.t-neon{--c1:#120A24;--c2:#2A1150;--acc:#FF5BF0;background:#140B28}
+.wallg{position:absolute;inset:0;overflow:hidden;cursor:pointer;
+  background:radial-gradient(circle,rgba(255,255,255,.12) 1.4px,transparent 1.5px) 0 0/22px 22px,linear-gradient(135deg,var(--c2),var(--c1))}
+.tilt{position:absolute;left:36%;top:50%;width:84%;display:grid;grid-template-columns:repeat(4,1fr);gap:22px;transform:translateY(-50%) rotate(-12deg)}
+.col{height:760px;overflow:hidden}
+.track{display:flex;flex-direction:column;gap:22px;animation:scrollY 38s linear infinite}
+.col.rev .track{animation-direction:reverse;animation-duration:44s}
+.wallg:hover .track{animation-play-state:paused}
+@keyframes scrollY{to{transform:translateY(calc(-50% - 11px))}}
+.track img{display:block;width:100%;height:auto;aspect-ratio:9/19;object-fit:cover;object-position:top;border-radius:18px;max-width:100%;
+  border:3px solid rgba(255,255,255,.85);box-shadow:0 14px 30px rgba(0,0,0,.35);transition:transform .25s var(--pop)}
+.track img:hover{transform:scale(1.04)}
+.case-copy{position:relative;z-index:1;width:min(46%,500px);min-height:440px;padding:clamp(24px,3.4vw,44px);display:flex;flex-direction:column;justify-content:center;gap:14px;
+  background:linear-gradient(90deg,var(--c1) 0%,color-mix(in srgb,var(--c1) 92%,transparent) 62%,transparent 100%);pointer-events:none}
+.case-copy>*{pointer-events:auto}
+.case::after{content:"";position:absolute;inset:0 auto 0 0;width:62%;z-index:0;pointer-events:none;
+  background:linear-gradient(90deg,var(--c1) 30%,color-mix(in srgb,var(--c1) 70%,transparent) 60%,transparent)}
+.case-label{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--acc)}
+.case h3{font:700 clamp(30px,3.6vw,46px)/1.02 var(--display);letter-spacing:-.03em;color:#fff}
+.case p{margin:0;font:500 16.5px/1.6 var(--body);color:rgba(245,240,232,.82);max-width:40ch}
+.case-chips{display:flex;flex-wrap:wrap;gap:8px}
+.case-chips span{font:700 13px/1 var(--body);padding:8px 11px;border-radius:9px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.22)}
+.case-cta{align-self:flex-start;margin-top:6px;appearance:none;border:0;cursor:pointer;min-height:50px;padding:0 22px;border-radius:14px;
+  background:#F5F0E8;color:#0D1828;font:800 15px/1 var(--body);display:inline-flex;align-items:center;gap:10px;box-shadow:inset 0 -4px 0 rgba(0,0,0,.15);
+  transition:transform .1s ease,background .2s ease}
+.case-cta span{transition:transform .2s var(--pop)}
+.case-cta:hover{background:#fff}.case-cta:hover span{transform:translateX(4px)}
+.case-cta:active{transform:scale(.95)}
+
+/* lightbox */
+.lb[hidden]{display:none!important}
+.lb{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.lb-bg{position:absolute;inset:0;background:rgba(6,10,20,.86);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:fadeIn .2s ease}
+.lb-in{position:relative;width:min(1000px,100%);max-height:100%;display:grid;grid-template-columns:auto 1fr;gap:clamp(20px,4vw,48px);align-items:center;color:#F5F0E8;animation:popIn .25s var(--pop)}
+@keyframes fadeIn{from{opacity:0}}
+@keyframes popIn{from{opacity:0;transform:scale(.92)}}
+.lb-x{position:absolute;right:0;top:0;z-index:2;width:48px;height:48px;border-radius:14px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font:700 18px/1 var(--body);cursor:pointer}
+.lb-x:hover{background:rgba(255,255,255,.16)}
+.lb-stage{display:flex;align-items:center;gap:14px}
+.lb-phone{margin:0;height:min(80vh,720px);aspect-ratio:var(--ratio,1124/2436);max-width:62vw;border-radius:30px;padding:8px;background:#0B0F1A;box-shadow:0 0 0 2px rgba(255,255,255,.14),0 30px 60px rgba(0,0,0,.5);overflow:hidden}
+.lb-phone img{display:block;width:100%;height:100%;object-fit:cover;border-radius:23px;max-width:100%;transition:opacity .18s ease,transform .25s var(--smooth)}
+.lb-phone img.swap{opacity:0;transform:translateX(var(--dir,12px))}
+.lb-nav{flex:none;width:52px;height:52px;border-radius:50%;border:2px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);color:#fff;font:800 20px/1 var(--body);cursor:pointer;transition:transform .1s ease,background .2s ease}
+.lb-nav:hover{background:rgba(255,255,255,.18)}.lb-nav:active{transform:scale(.92)}
+.lb-nav:disabled{opacity:.3;cursor:default}
+.lb-info{display:flex;flex-direction:column;gap:12px;min-width:0;padding-right:56px}
+.lb-game{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#FF8A3D}
+.lb-count{font:700 14px/1 var(--body);color:rgba(245,240,232,.6);font-variant-numeric:tabular-nums}
+.lb-info h3{font:700 clamp(26px,3vw,38px)/1.08 var(--display);letter-spacing:-.025em;color:#fff}
+.lb-info p{margin:0;font:500 17px/1.6 var(--body);color:rgba(245,240,232,.84);max-width:42ch}
+.lb-thumbs{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.lb-thumbs button{width:52px;height:96px;padding:0;border-radius:10px;overflow:hidden;border:2px solid rgba(255,255,255,.18);background:#0B0F1A;cursor:pointer;opacity:.55;transition:opacity .2s ease,border-color .2s ease,transform .2s var(--pop)}
+.lb-thumbs button img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;max-width:none}
+.lb-thumbs button:hover{opacity:.85}
+.lb-thumbs button[aria-current="true"]{opacity:1;border-color:#FF6A14;transform:translateY(-3px)}
+.lb-hint{font:600 13px/1 var(--body);color:rgba(245,240,232,.5);margin-top:4px}
+/* client card + landscape mode */
+.case.t-knight{--c1:#101C38;--c2:#2D4C8F;--acc:#9CC2FF;background:#16284E}
+.client-badge.practice{background:#9CC2FF;color:#0A1530}
+.case-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.case-btns .case-cta{margin-top:0}
+.case-cta.ghost{background:transparent;color:#F5F0E8;border:2px solid rgba(255,255,255,.4);box-shadow:none}
+.case-cta.ghost:hover{background:rgba(255,255,255,.1)}
+.case.t-spook{--c1:#160A24;--c2:#4A1E6E;--acc:#9CFF6B;background:#22103A}
+.case.t-royal{--c1:#240C42;--c2:#6A2AA6;--acc:#FFB3E6;background:#3A1468}
+.client-badge{align-self:flex-start;font:800 12px/1 var(--body);letter-spacing:.06em;text-transform:uppercase;padding:8px 11px;border-radius:8px;background:#FF6A14;color:#1A0800}
+.wallg.land .tilt{grid-template-columns:repeat(3,1fr);left:32%;width:96%}
+.wallg.land .track img{aspect-ratio:16/9;border-radius:12px}
+.lb-in.land{grid-template-columns:1fr;justify-items:center;gap:18px;width:min(1100px,100%)}
+.lb-in.land .lb-stage{width:100%;justify-content:center}
+.lb-in.land .lb-phone{height:auto;width:min(860px,calc(100vw - 180px));max-width:none;border-radius:20px;padding:6px}
+.lb-in.land .lb-phone img{border-radius:15px}
+.lb-in.land .lb-info{padding-right:0;align-items:center;text-align:center;max-width:780px;width:100%;min-width:0}
+.lb-in{overflow-x:hidden}
+.lb-thumbs{position:relative}
+.lb-in.land .lb-info p{max-width:62ch}
+.lb-in.land .lb-thumbs{flex-wrap:nowrap;overflow-x:auto;max-width:100%;justify-content:flex-start;padding:4px 2px 8px;scrollbar-width:thin}
+.lb-thumbs.landg button{flex:none;width:76px;height:43px;border-radius:7px}
+.lb-thumbs button.w{width:92px;height:50px;flex:none}
+.lb-in.land .lb-thumbs button{flex:none}
+.lb-in.land .lb-info h3{font-size:clamp(22px,2.4vw,30px)}
+@media (max-width:860px){
+  .lb-in.land .lb-stage{margin-top:56px}
+  .lb-in.land .lb-phone{width:calc(100vw - 132px);padding:4px;border-radius:14px}
+  .lb-in.land .lb-phone img{border-radius:10px}
+  .lb-thumbs.landg button{width:60px;height:34px}
+  .wallg.land .tilt{left:-6%;width:125%}
+}
+
+@media (max-width:860px){
+  .case{min-height:0;display:flex;flex-direction:column}
+  .wallg{position:relative;inset:auto;aspect-ratio:4/3}
+  .tilt{left:-10%;width:120%}
+  .case::after{display:none}
+  .case-copy{width:100%;min-height:0;background:var(--c1)}
+  .lb-in{grid-template-columns:1fr;justify-items:center;gap:16px;overflow:auto}
+  .lb-phone{height:min(58vh,560px);max-width:70vw}
+  .lb-info{padding-right:0;align-items:center;text-align:center}
+  .lb-info p{font-size:15.5px}
+  .lb-thumbs{justify-content:center}
+  .lb-thumbs button{width:38px;height:70px}
+  .lb-hint{display:none}
+}
+@media (max-width:560px){
+  .lb-nav{width:44px;height:44px}
+  .lb-stage{gap:8px}
+  .lb-phone{max-width:62vw;border-radius:22px;padding:5px}
+  .lb-phone img{border-radius:18px}
+  .tilt{gap:14px}.track{gap:14px}.col{height:620px}
+}
+.dock .m{display:none}
+@media (max-width:560px){.dock .d{display:none}.dock .m{display:inline}.dock a{padding:0 8px}}
+
+@media (max-width:860px){
+  .hero{grid-template-columns:1fr;gap:8px;padding-top:16px}
+  .player{order:-1;width:min(86%,360px)}
+  .hero-copy{padding-bottom:0}
+  .games{grid-template-columns:1fr}
+  .inv{grid-template-columns:1fr}
+  .slots{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .edu{grid-template-columns:1fr}
+  .contact-head{grid-template-columns:1fr}
+  .contact-head .free{justify-self:start}
+  .links{display:flex;margin-top:18px}
+  .card{grid-template-columns:48px 1fr;gap:14px;padding:18px}
+  .card .ico{width:48px;height:48px;border-radius:14px}
+  .card .ico.logo{border-radius:50%}
+  .card .ico svg{width:24px;height:24px}
+  .nav-lv{grid-column:1/-1;flex-direction:row;justify-content:space-between;align-items:center}
+}
+@media (max-width:640px){.plate .face{display:none}.plate.has-face{padding:8px 12px}}
+@media (max-width:560px){
+  .hud .btn-gold span{display:none}
+  .hud .btn-gold{width:48px;padding:0}
+  .bar{max-width:none}
+  .chip-float{padding:8px 10px}.chip-float b{font-size:15px}
+  .chip-float.c1{right:-6%}.chip-float.c2{left:-6%}
+  .dock a{padding:0 9px;font-size:13px}
+  .soon{grid-template-columns:1fr}
+  .slots{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+
+<canvas id="world" aria-hidden="true"></canvas>
+
+<div class="page">
+<header class="hud">
+  <div class="wrap">
+    <div class="hud-in">
+      <div class="badge" aria-hidden="true">SM</div>
+      <div class="xp">
+        <div class="xp-top"><span class="xp-name">Sumit Maurya</span><span class="label">LV 4 · Indie Dev</span></div>
+        <div class="bar" role="img" aria-label="Career progress, level 4"><i></i></div>
+      </div>
+      <button class="btn icon-btn" id="theme" type="button" aria-label="Switch theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path id="themeIcon" d=""/></svg>
+      </button>
+      <a class="btn btn-gold" href="https://play.google.com/store/apps/dev?id=5886684719149194265" target="_blank" rel="noopener" aria-label="Play my games on Google Play">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.4-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5Z"/></svg>
+        <span>Play my games</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="hero" id="home">
+      <div class="hero-copy">
+        <div class="status"><span class="dot" aria-hidden="true"></span><time id="clock">AHMEDABAD · IST</time></div>
+        <h1>Sumit<br><span class="gold">Maurya</span></h1>
+        <p class="lede">I make mobile games, and I make them <em>feel good to play.</em></p>
+        <p class="sub">2D game and UI designer turned indie developer. 3.5+ years at game studios designing the screens players tap every day: shops, popups, rewards and HUDs. Since September 2026 I build my own games under FunMint Games.</p>
+        <div class="ctas">
+          <a class="btn btn-gold" href="https://play.google.com/store/apps/dev?id=5886684719149194265" target="_blank" rel="noopener">Play my games ↗</a>
+          <a class="btn btn-ghost" href="#ui">See my UI work</a>
+          <a class="text-link" href="resume.pdf" target="_blank" rel="noopener">Resume (PDF)</a>
+        </div>
+        <div class="stats">
+          <div class="stat"><b>3.5+ yrs</b><span>in game studios</span></div>
+          <div class="stat"><b>8</b><span>games · 2 live, 6 coming</span></div>
+          <div class="stat"><b>4.8★</b><span>Animal Sort Puzzle</span></div>
+        </div>
+      </div>
+      <div class="player">
+        <div class="spot"></div>
+        <div class="disc"></div>
+        <img class="photo" src="sumit.webp" alt="Sumit Maurya smiling, in a beige hoodie" width="760" height="938">
+        <div class="fade"></div>
+        <span class="tag">PLAYER 1</span>
+        <div class="chip-float c1"><img class="ci" src="tool-photoshop.webp" alt="" width="40" height="40"><div class="ct"><b>Photoshop</b><span>Expert</span></div></div>
+        <div class="chip-float c2"><img class="ci round" src="funmint-logo.webp" alt="" width="40" height="40"><div class="ct"><b>Indie dev</b><span>FunMint Games</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <section id="games">
+    <div class="wrap">
+      <div class="head">
+        <div class="studio"><span class="logo-tile" role="img" aria-label="FunMint Games logo"></span><div class="txt"><b>FunMint Games</b><span class="label">My indie studio · Since Sep 2026</span></div></div>
+        <h2>Games I made.</h2>
+        <p>Designed, built and published by me. Two are live on Google Play, and six more are on the way.</p>
+      </div>
+      <div class="games">
+        <a class="game" href="https://play.google.com/store/apps/dev?id=5886684719149194265" target="_blank" rel="noopener">
+          <div class="art"><img src="game-animal-sort.webp" alt="Animal Sort Puzzle banner: cute animal blocks on a sky background" width="1024" height="500" loading="lazy"></div>
+          <div class="game-body">
+            <div class="game-top"><h3>Animal Sort Puzzle</h3><div class="chips"><span class="chip hot">4.8★</span><span class="chip">1K+ downloads</span></div></div>
+            <p>A relaxing sorting puzzle with colourful levels and tricky challenges.</p>
+            <span class="go-row"><span class="go">Open on Google Play ↗</span><span class="plat"><img src="icon-play.webp" alt="" width="16" height="16">Android · Free</span></span>
+          </div>
+        </a>
+        <a class="game" href="https://play.google.com/store/apps/dev?id=5886684719149194265" target="_blank" rel="noopener">
+          <div class="art"><img src="game-block-link.webp" alt="Block Link Puzzle banner: glowing coloured blocks linked by a line" width="1024" height="500" loading="lazy"></div>
+          <div class="game-body">
+            <div class="game-top"><h3>Block Link Puzzle</h3><div class="chips"><span class="chip new">New release</span></div></div>
+            <p>Link the blocks and clear the board. My newest game.</p>
+            <span class="go-row"><span class="go">Open on Google Play ↗</span><span class="plat"><img src="icon-play.webp" alt="" width="16" height="16">Android · Free</span></span>
+          </div>
+        </a>
+      </div>
+      <div class="soon-head"><h3>Coming soon</h3><span class="count">6 GAMES</span></div>
+      <div class="soon">
+        <article class="soon-card">
+          <div class="art"><span class="ribbon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>COMING SOON</span><img src="game-color-bomb.webp" alt="Color Bomb Shooter banner: Cannon firing bombs at a wall of colourful blocks" width="1024" height="500" loading="lazy"></div>
+          <div class="soon-body"><h4>Color Bomb Shooter</h4><div class="meta"><span class="genre">Shooter · Puzzle</span><span class="where"><img src="icon-play.webp" alt="" width="14" height="14">Coming to Google Play</span></div></div>
+        </article>
+        <article class="soon-card">
+          <div class="art"><span class="ribbon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>COMING SOON</span><img src="game-liondoku.webp" alt="LionDoku banner: A cartoon lion holding a trophy beside a grid of paw tiles" width="1024" height="500" loading="lazy"></div>
+          <div class="soon-body"><h4>LionDoku</h4><div class="meta"><span class="genre">Brain puzzle</span><span class="where"><img src="icon-play.webp" alt="" width="14" height="14">Coming to Google Play</span></div></div>
+        </article>
+        <article class="soon-card">
+          <div class="art"><span class="ribbon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>COMING SOON</span><img src="game-apextorque.webp" alt="ApexTorque banner: Red and yellow muscle cars drifting through a tunnel" width="1024" height="500" loading="lazy"></div>
+          <div class="soon-body"><h4>ApexTorque</h4><div class="meta"><span class="genre">Racing</span><span class="where"><img src="icon-play.webp" alt="" width="14" height="14">Coming to Google Play</span></div></div>
+        </article>
+        <article class="soon-card">
+          <div class="art"><span class="ribbon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>COMING SOON</span><img src="game-gunblade.webp" alt="Gunblade Legends banner: A hooded hero with a sword and pistol facing a giant orc" width="1024" height="500" loading="lazy"></div>
+          <div class="soon-body"><h4>Gunblade Legends</h4><div class="meta"><span class="genre">Action</span><span class="where"><img src="icon-play.webp" alt="" width="14" height="14">Coming to Google Play</span></div></div>
+        </article>
+        <article class="soon-card">
+          <div class="art"><span class="ribbon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>COMING SOON</span><img src="game-block-colour.webp" alt="Block Colour Puzzle banner: smiling orange, red and blue block characters riding a block" width="1024" height="500" loading="lazy"></div>
+          <div class="soon-body"><h4>Block Colour Puzzle</h4><div class="meta"><span class="genre">Block puzzle</span><span class="where"><img src="icon-play.webp" alt="" width="14" height="14">Coming to Google Play</span></div></div>
+        </article>
+        <article class="soon-card">
+          <div class="art"><span class="ribbon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>COMING SOON</span><img src="game-hexa-monkey.webp" alt="Hexa Monkey banner: a phone showing a hexagon monkey puzzle next to the game logo" width="1024" height="500" loading="lazy"></div>
+          <div class="soon-body"><h4>Hexa Monkey</h4><div class="meta"><span class="genre">Hexa logic puzzle</span><span class="where"><img src="icon-play.webp" alt="" width="14" height="14">Coming to Google Play</span></div></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="ui">
+    <div class="wrap">
+      <div class="head">
+        <span class="label">Case files · UI work</span>
+        <h2>Game UI I designed.</h2>
+        <p>5 games, 52 screens. Every screen designed by me in Photoshop, for a client and for my own studio. Open a game to go through its screens one by one, with a note on each.</p>
+      </div>
+      <div class="cases">
+      <article class="case t-sky">
+        <div class="wallg" data-game="as" aria-hidden="true"><div class="tilt"><div class="col"><div class="track"><img src="ui/as-home-t.webp" alt="" width="300" height="600" loading="lazy" data-i="0"><img src="ui/as-noads-t.webp" alt="" width="300" height="600" loading="lazy" data-i="1"><img src="ui/as-shop-t.webp" alt="" width="300" height="600" loading="lazy" data-i="2"><img src="ui/as-home-t.webp" alt="" width="300" height="600" loading="lazy" data-i="0"><img src="ui/as-noads-t.webp" alt="" width="300" height="600" loading="lazy" data-i="1"><img src="ui/as-shop-t.webp" alt="" width="300" height="600" loading="lazy" data-i="2"></div></div><div class="col rev"><div class="track"><img src="ui/as-quest-t.webp" alt="" width="300" height="600" loading="lazy" data-i="3"><img src="ui/as-loading-t.webp" alt="" width="300" height="600" loading="lazy" data-i="4"><img src="ui/as-play-t.webp" alt="" width="300" height="600" loading="lazy" data-i="5"><img src="ui/as-quest-t.webp" alt="" width="300" height="600" loading="lazy" data-i="3"><img src="ui/as-loading-t.webp" alt="" width="300" height="600" loading="lazy" data-i="4"><img src="ui/as-play-t.webp" alt="" width="300" height="600" loading="lazy" data-i="5"></div></div><div class="col"><div class="track"><img src="ui/as-home-t.webp" alt="" width="300" height="600" loading="lazy" data-i="0"><img src="ui/as-noads-t.webp" alt="" width="300" height="600" loading="lazy" data-i="1"><img src="ui/as-shop-t.webp" alt="" width="300" height="600" loading="lazy" data-i="2"><img src="ui/as-home-t.webp" alt="" width="300" height="600" loading="lazy" data-i="0"><img src="ui/as-noads-t.webp" alt="" width="300" height="600" loading="lazy" data-i="1"><img src="ui/as-shop-t.webp" alt="" width="300" height="600" loading="lazy" data-i="2"></div></div><div class="col rev"><div class="track"><img src="ui/as-quest-t.webp" alt="" width="300" height="600" loading="lazy" data-i="3"><img src="ui/as-loading-t.webp" alt="" width="300" height="600" loading="lazy" data-i="4"><img src="ui/as-play-t.webp" alt="" width="300" height="600" loading="lazy" data-i="5"><img src="ui/as-quest-t.webp" alt="" width="300" height="600" loading="lazy" data-i="3"><img src="ui/as-loading-t.webp" alt="" width="300" height="600" loading="lazy" data-i="4"><img src="ui/as-play-t.webp" alt="" width="300" height="600" loading="lazy" data-i="5"></div></div></div></div>
+        <div class="case-copy">
+          <span class="case-label">Casual puzzle · 6 screens</span>
+          <h3>Animal Sort Puzzle</h3>
+          <p>Bright, toy-like UI for a relaxing sort puzzle. Soft 3D buttons, a clear coin economy and a shop that never hides the close button.</p>
+          <div class="case-chips"><span>Home</span><span>Shop &amp; IAP</span><span>Offer popup</span><span>Quests</span><span>Loading</span><span>Gameplay</span></div>
+          <button class="case-cta" type="button" data-open="as">View the 6 screens <span aria-hidden="true">→</span></button>
+        </div>
+      </article>
+      <article class="case t-neon">
+        <div class="wallg" data-game="bl" aria-hidden="true"><div class="tilt"><div class="col"><div class="track"><img src="ui/bl-628-t.webp" alt="" width="300" height="600" loading="lazy" data-i="0"><img src="ui/bl-1099-t.webp" alt="" width="300" height="600" loading="lazy" data-i="1"><img src="ui/bl-100-t.webp" alt="" width="300" height="600" loading="lazy" data-i="2"><img src="ui/bl-628-t.webp" alt="" width="300" height="600" loading="lazy" data-i="0"><img src="ui/bl-1099-t.webp" alt="" width="300" height="600" loading="lazy" data-i="1"><img src="ui/bl-100-t.webp" alt="" width="300" height="600" loading="lazy" data-i="2"></div></div><div class="col rev"><div class="track"><img src="ui/bl-215-t.webp" alt="" width="300" height="600" loading="lazy" data-i="3"><img src="ui/bl-426-t.webp" alt="" width="300" height="600" loading="lazy" data-i="4"><img src="ui/bl-628-t.webp" alt="" width="300" height="600" loading="lazy" data-i="0"><img src="ui/bl-215-t.webp" alt="" width="300" height="600" loading="lazy" data-i="3"><img src="ui/bl-426-t.webp" alt="" width="300" height="600" loading="lazy" data-i="4"><img src="ui/bl-628-t.webp" alt="" width="300" height="600" loading="lazy" data-i="0"></div></div><div class="col"><div class="track"><img src="ui/bl-1099-t.webp" alt="" width="300" height="600" loading="lazy" data-i="1"><img src="ui/bl-100-t.webp" alt="" width="300" height="600" loading="lazy" data-i="2"><img src="ui/bl-215-t.webp" alt="" width="300" height="600" loading="lazy" data-i="3"><img src="ui/bl-1099-t.webp" alt="" width="300" height="600" loading="lazy" data-i="1"><img src="ui/bl-100-t.webp" alt="" width="300" height="600" loading="lazy" data-i="2"><img src="ui/bl-215-t.webp" alt="" width="300" height="600" loading="lazy" data-i="3"></div></div><div class="col rev"><div class="track"><img src="ui/bl-426-t.webp" alt="" width="300" height="600" loading="lazy" data-i="4"><img src="ui/bl-628-t.webp" alt="" width="300" height="600" loading="lazy" data-i="0"><img src="ui/bl-1099-t.webp" alt="" width="300" height="600" loading="lazy" data-i="1"><img src="ui/bl-426-t.webp" alt="" width="300" height="600" loading="lazy" data-i="4"><img src="ui/bl-628-t.webp" alt="" width="300" height="600" loading="lazy" data-i="0"><img src="ui/bl-1099-t.webp" alt="" width="300" height="600" loading="lazy" data-i="1"></div></div></div></div>
+        <div class="case-copy">
+          <span class="case-label">Brain puzzle · 5 store screens</span>
+          <h3>Block Link Puzzle</h3>
+          <p>A neon, high-contrast look that reads fast on a small screen. A new colour for each level and a tutorial hand that shows the move.</p>
+          <div class="case-chips"><span>Store screenshots</span><span>Level UI</span><span>Tutorial hand</span><span>Neon palette</span></div>
+          <button class="case-cta" type="button" data-open="bl">View the 5 screens <span aria-hidden="true">→</span></button>
+        </div>
+      </article>
+      <article class="case t-royal">
+        <div class="wallg land" data-game="lc" aria-hidden="true"><div class="tilt"><div class="col"><div class="track"><img src="ui/lc-loading-t.webp" alt="" width="420" height="236" loading="lazy" data-i="0"><img src="ui/lc-title-t.webp" alt="" width="420" height="236" loading="lazy" data-i="1"><img src="ui/lc-map-t.webp" alt="" width="420" height="236" loading="lazy" data-i="2"><img src="ui/lc-levelstart-t.webp" alt="" width="420" height="236" loading="lazy" data-i="3"><img src="ui/lc-loading-t.webp" alt="" width="420" height="236" loading="lazy" data-i="0"><img src="ui/lc-title-t.webp" alt="" width="420" height="236" loading="lazy" data-i="1"><img src="ui/lc-map-t.webp" alt="" width="420" height="236" loading="lazy" data-i="2"><img src="ui/lc-levelstart-t.webp" alt="" width="420" height="236" loading="lazy" data-i="3"></div></div><div class="col rev"><div class="track"><img src="ui/lc-gameplay-t.webp" alt="" width="420" height="236" loading="lazy" data-i="4"><img src="ui/lc-welldone-t.webp" alt="" width="420" height="236" loading="lazy" data-i="5"><img src="ui/lc-outofmoves-t.webp" alt="" width="420" height="236" loading="lazy" data-i="6"><img src="ui/lc-quit-t.webp" alt="" width="420" height="236" loading="lazy" data-i="7"><img src="ui/lc-gameplay-t.webp" alt="" width="420" height="236" loading="lazy" data-i="4"><img src="ui/lc-welldone-t.webp" alt="" width="420" height="236" loading="lazy" data-i="5"><img src="ui/lc-outofmoves-t.webp" alt="" width="420" height="236" loading="lazy" data-i="6"><img src="ui/lc-quit-t.webp" alt="" width="420" height="236" loading="lazy" data-i="7"></div></div><div class="col"><div class="track"><img src="ui/lc-nolives-t.webp" alt="" width="420" height="236" loading="lazy" data-i="8"><img src="ui/lc-hammer-t.webp" alt="" width="420" height="236" loading="lazy" data-i="9"><img src="ui/lc-store1-t.webp" alt="" width="420" height="236" loading="lazy" data-i="10"><img src="ui/lc-store2-t.webp" alt="" width="420" height="236" loading="lazy" data-i="11"><img src="ui/lc-nolives-t.webp" alt="" width="420" height="236" loading="lazy" data-i="8"><img src="ui/lc-hammer-t.webp" alt="" width="420" height="236" loading="lazy" data-i="9"><img src="ui/lc-store1-t.webp" alt="" width="420" height="236" loading="lazy" data-i="10"><img src="ui/lc-store2-t.webp" alt="" width="420" height="236" loading="lazy" data-i="11"></div></div></div></div>
+        <div class="case-copy">
+          <span class="client-badge">Client project</span>
+          <span class="case-label">Match-3 · Landscape · 20 screens</span>
+          <h3>Lumina Castle Match</h3>
+          <p>Full game UI for a client's royal-themed match-3: map HUD, level flow, store and offers, rewards, leaderboard and settings. One popup system reused across 15+ dialogs.</p>
+          <div class="case-chips"><span>Map HUD</span><span>Level flow</span><span>Royal Store</span><span>Offers &amp; IAP</span><span>Rewards</span><span>Leaderboard</span><span>Settings</span></div>
+          <button class="case-cta" type="button" data-open="lc">View the 20 screens <span aria-hidden="true">→</span></button>
+        </div>
+      </article>
+      <article class="case t-spook">
+        <div class="wallg" data-game="pp" aria-hidden="true"><div class="tilt"><div class="col"><div class="track"><img src="ui/pp-loading-t.webp" alt="" width="300" height="650" loading="lazy" data-i="0"><img src="ui/pp-title-t.webp" alt="" width="300" height="650" loading="lazy" data-i="1"><img src="ui/pp-map-t.webp" alt="" width="300" height="650" loading="lazy" data-i="2"><img src="ui/pp-loading-t.webp" alt="" width="300" height="650" loading="lazy" data-i="0"><img src="ui/pp-title-t.webp" alt="" width="300" height="650" loading="lazy" data-i="1"><img src="ui/pp-map-t.webp" alt="" width="300" height="650" loading="lazy" data-i="2"></div></div><div class="col rev"><div class="track"><img src="ui/pp-gameplay-t.webp" alt="" width="300" height="650" loading="lazy" data-i="3"><img src="ui/pp-settings-t.webp" alt="" width="300" height="650" loading="lazy" data-i="4"><img src="ui/pp-daily-t.webp" alt="" width="300" height="650" loading="lazy" data-i="5"><img src="ui/pp-gameplay-t.webp" alt="" width="300" height="650" loading="lazy" data-i="3"><img src="ui/pp-settings-t.webp" alt="" width="300" height="650" loading="lazy" data-i="4"><img src="ui/pp-daily-t.webp" alt="" width="300" height="650" loading="lazy" data-i="5"></div></div><div class="col"><div class="track"><img src="ui/pp-spin-t.webp" alt="" width="300" height="650" loading="lazy" data-i="6"><img src="ui/pp-trophy-t.webp" alt="" width="300" height="650" loading="lazy" data-i="7"><img src="ui/pp-leaderboard-t.webp" alt="" width="300" height="650" loading="lazy" data-i="8"><img src="ui/pp-spin-t.webp" alt="" width="300" height="650" loading="lazy" data-i="6"><img src="ui/pp-trophy-t.webp" alt="" width="300" height="650" loading="lazy" data-i="7"><img src="ui/pp-leaderboard-t.webp" alt="" width="300" height="650" loading="lazy" data-i="8"></div></div><div class="col rev"><div class="track"><img src="ui/pp-collections-t.webp" alt="" width="300" height="650" loading="lazy" data-i="9"><img src="ui/pp-loading-t.webp" alt="" width="300" height="650" loading="lazy" data-i="0"><img src="ui/pp-title-t.webp" alt="" width="300" height="650" loading="lazy" data-i="1"><img src="ui/pp-collections-t.webp" alt="" width="300" height="650" loading="lazy" data-i="9"><img src="ui/pp-loading-t.webp" alt="" width="300" height="650" loading="lazy" data-i="0"><img src="ui/pp-title-t.webp" alt="" width="300" height="650" loading="lazy" data-i="1"></div></div></div></div>
+        <div class="case-copy">
+          <span class="client-badge">Client project</span>
+          <span class="case-label">Halloween puzzle · Portrait · 10 screens</span>
+          <h3>Pull the Pin</h3>
+          <p>A Halloween theme from top to bottom for the same client: skull coins, bone pins, purple ribbon headers and a haunted map. Every screen uses one spooky UI kit.</p>
+          <div class="case-chips"><span>Level map</span><span>Gameplay HUD</span><span>Daily reward</span><span>Spin</span><span>Trophy track</span><span>Leaderboard</span><span>Collections</span></div>
+          <button class="case-cta" type="button" data-open="pp">View the 10 screens <span aria-hidden="true">→</span></button>
+        </div>
+      </article>
+      <article class="case t-knight">
+        <div class="wallg" data-game="pw" aria-hidden="true"><div class="tilt"><div class="col"><div class="track"><img src="ui/pw-loading-t.webp" alt="" width="300" height="650" loading="lazy" data-i="0"><img src="ui/pw-login-t.webp" alt="" width="300" height="650" loading="lazy" data-i="1"><img src="ui/pw-home-t.webp" alt="" width="300" height="650" loading="lazy" data-i="2"><img src="ui/pw-loading-t.webp" alt="" width="300" height="650" loading="lazy" data-i="0"><img src="ui/pw-login-t.webp" alt="" width="300" height="650" loading="lazy" data-i="1"><img src="ui/pw-home-t.webp" alt="" width="300" height="650" loading="lazy" data-i="2"></div></div><div class="col rev"><div class="track"><img src="ui/pw-menu-t.webp" alt="" width="300" height="650" loading="lazy" data-i="3"><img src="ui/pw-daily-t.webp" alt="" width="300" height="650" loading="lazy" data-i="4"><img src="ui/pw-inventory-t.webp" alt="" width="300" height="650" loading="lazy" data-i="5"><img src="ui/pw-menu-t.webp" alt="" width="300" height="650" loading="lazy" data-i="3"><img src="ui/pw-daily-t.webp" alt="" width="300" height="650" loading="lazy" data-i="4"><img src="ui/pw-inventory-t.webp" alt="" width="300" height="650" loading="lazy" data-i="5"></div></div><div class="col"><div class="track"><img src="ui/pw-profile-t.webp" alt="" width="300" height="650" loading="lazy" data-i="6"><img src="ui/pw-chat-t.webp" alt="" width="300" height="650" loading="lazy" data-i="7"><img src="ui/pw-stage-t.webp" alt="" width="300" height="650" loading="lazy" data-i="8"><img src="ui/pw-profile-t.webp" alt="" width="300" height="650" loading="lazy" data-i="6"><img src="ui/pw-chat-t.webp" alt="" width="300" height="650" loading="lazy" data-i="7"><img src="ui/pw-stage-t.webp" alt="" width="300" height="650" loading="lazy" data-i="8"></div></div><div class="col rev"><div class="track"><img src="ui/pw-offline-t.webp" alt="" width="300" height="650" loading="lazy" data-i="9"><img src="ui/pw-loading-t.webp" alt="" width="300" height="650" loading="lazy" data-i="0"><img src="ui/pw-login-t.webp" alt="" width="300" height="650" loading="lazy" data-i="1"><img src="ui/pw-offline-t.webp" alt="" width="300" height="650" loading="lazy" data-i="9"><img src="ui/pw-loading-t.webp" alt="" width="300" height="650" loading="lazy" data-i="0"><img src="ui/pw-login-t.webp" alt="" width="300" height="650" loading="lazy" data-i="1"></div></div></div></div>
+        <div class="case-copy">
+          <span class="client-badge practice">Practice project</span>
+          <span class="case-label">RPG · Portrait · 10 screens + UI kit</span>
+          <h3>Pocket Warrior</h3>
+          <p>A self-initiated RPG concept to practise a full UI system: one asset kit of buttons, ribbons, frames and bars, then 10 screens built from it.</p>
+          <div class="case-chips"><span>UI asset kit</span><span>Home HUD</span><span>Inventory</span><span>Profile</span><span>Chat</span><span>Daily bonus</span><span>Stage rewards</span></div>
+          <div class="case-btns">
+            <button class="case-cta" type="button" data-open="pw">View the 10 screens <span aria-hidden="true">→</span></button>
+            <button class="case-cta ghost" type="button" data-open="pw" data-start="10">See the UI kit</button>
+          </div>
+        </div>
+      </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="journey">
+    <div class="wrap">
+      <div class="head">
+        <span class="label">World 1 · Career</span>
+        <h2>Four levels so far.</h2>
+        <p>Every studio taught me one more part of making games. Tap a level to see what I did there.</p>
+      </div>
+      <div class="map">
+        <div class="board" id="board">
+          <svg id="mapSvg" viewBox="0 0 1000 460" aria-hidden="true">
+            <path class="road-edge" id="pEdge"/>
+            <path class="road" id="pRoad"/>
+            <path class="road-done" id="pDone" pathLength="100"/>
+            <path class="road-next" id="pNext"/>
+          </svg>
+        </div>
+        <div class="card" id="card" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="wrap">
+      <div class="head">
+        <span class="label">Inventory · Skills</span>
+        <h2>What I bring to every game.</h2>
+        <p>The tools and skills I use every day, from first sketch to Unity-ready assets.</p>
+      </div>
+      <div class="inv">
+        <div class="legend">
+          <span class="rar">LEGENDARY · EXPERT</span>
+          <img src="tool-photoshop.webp" alt="Adobe Photoshop" width="160" height="160">
+          <div><h3>Adobe Photoshop</h3><p>My main tool. Game screens, 2D art, icons, banners and every UI asset I ship.</p></div>
+          <div class="made"><span>Game screens</span><span>2D art</span><span>Icons</span><span>Banners</span><span>UI assets</span></div>
+          <div class="lvbar"><div class="row"><span>SKILL LEVEL</span><span>MAX</span></div><div class="track"><i></i></div></div>
+        </div>
+        <div class="slots">
+          <div class="slot c-o"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M9 7h6M9 11h6"/><rect x="9" y="15" width="6" height="3" rx="1"/></svg></span><b>Game UI</b><span>HUD, menus, shop/IAP and popups</span><a class="slot-link" href="https://www.behance.net/sumitmaurya_35" target="_blank" rel="noopener">See on Behance ↗</a></div>
+          <div class="slot c-m"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.6 7.6"/><circle cx="11" cy="11" r="2"/></svg></span><b>2D game art</b><span>Characters, backgrounds, props and graphic design</span></div>
+          <div class="slot c-b"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg></span><b>Icons &amp; 9-slice</b><span>Buttons and panels with every state</span></div>
+          <div class="slot c-m"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="15" y="15" width="6" height="6" rx="1.5"/><path d="M9 6h4a2 2 0 0 1 2 2v7"/></svg></span><b>UI/UX</b><span>Wireframes and user flows</span></div>
+          <div class="slot c-b"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg></span><b>Unity-ready export</b><span>Trimmed PNGs, sprites and layout specs for devs</span></div>
+          <div class="slot c-o"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="12" rx="5"/><path d="M7 11v4M5 13h4"/><circle cx="16" cy="12" r="1" fill="currentColor"/><circle cx="18" cy="14.5" r="1" fill="currentColor"/></svg></span><b>Game design</b><span>Game screens, banners and promo creatives</span></div>
+        </div>
+      </div>
+      <div class="langs"><span class="label">Languages</span><span class="l">Hindi</span><span class="l">English</span><span class="l">Gujarati</span></div>
+
+      <div class="subhead">
+        <span class="label">Tutorial levels</span>
+        <h3>Education</h3>
+      </div>
+      <div class="edu">
+        <div class="edu-card"><span class="badge-e"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></span>
+          <div><span class="eyebrow">College</span><h3>B.Com (not completed)</h3><p>Aroma College, Usmanpura, Ahmedabad</p></div></div>
+        <div class="edu-card"><span class="badge-e"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg></span>
+          <div><span class="eyebrow">School</span><h3>12th Pass</h3><p>Higher Secondary, Gujarat, India</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <div class="contact-head">
+        <div class="head" style="margin:0">
+          <span class="label">Multiplayer · Contact</span>
+          <h2>Let's make something players love.</h2>
+          <p class="lead">Studios, publishers and clients: pick a frame on the wall. Message me about game UI, 2D art or a full game.</p>
+        </div>
+        <span class="free"><i></i>Open to freelance: game UI, 2D art and websites</span>
+      </div>
+      <div class="room" id="room">
+        <svg class="art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <defs><linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sky)"/><stop offset="1" stop-color="var(--sky-2)"/></linearGradient></defs>
+  <rect class="w" width="1600" height="900"/>
+  <rect class="w2" width="1600" height="36"/>
+  <path d="M120 48 Q800 112 1480 48" fill="none" stroke="var(--muted)" stroke-width="2" opacity=".6"/><line x1="120" y1="48" x2="120" y2="58" stroke="var(--muted)" stroke-width="2"/><circle class="bulb" cx="120" cy="64" r="7" style="animation-delay:-0.0s"/><line x1="205" y1="56" x2="205" y2="66" stroke="var(--muted)" stroke-width="2"/><circle class="bulb" cx="205" cy="72" r="7" style="animation-delay:-0.5s"/><line x1="290" y1="62" x2="290" y2="72" stroke="var(--muted)" stroke-width="2"/><circle class="bulb" cx="290" cy="78" r="7" style="animation-delay:-1.0s"/><line x1="375" y1="68" x2="375" y2="78" stroke="var(--muted)" stroke-width="2"/><circle class="bulb" cx="375" cy="84" r="7" style="animation-delay:-1.5s"/><line x1="460" y1="72" x2="460" y2="82" stroke="var(--muted)" stroke-width="2"/><circle class="bulb" cx="460" cy="88" r="7" style="animation-delay:-2.0s"/><line x1="545" y1="76" x2="545" y2="86" stroke="var(--muted)" stroke-width="2"/><circle class="bulb" cx="545" cy="92" r="7" style="animation-delay:-0.0s"/><line x1="630" y1="78" x2="630" y2="88" stroke="var(--muted)" stroke-width="2"/><circle class="bulb" cx="630" cy="94" r="7" style="animation-delay:-0.5s"/><line x1="715" y1="80" x2="715" y2="90" stroke="var(--muted)" stroke-width="2"/><circle class="bulb" cx="715" cy="96" r="7" style="animation-delay:-1.0s"/><line x1="800" y1="80" x2="800" y2="90" stroke="var(--muted)" stroke-width="2"/><circle class="bulb" cx="800" cy="96" r="7" style="animation-delay:-1.5s"/><line x1="885" y1="80" x2="885" y2="90" stroke="var(--muted)" stroke-width="2"/><circle class="bulb" cx="885" cy="96" r="7" style="animation-delay:-2.0s"/><line x1="970" y1="78" x2="970" y2="88" stroke="var(--muted)" stroke-width="2"/><circle class="bulb" cx="970" cy="94" r="7" style="animation-delay:-0.0s"/><line x1="1055" y1="76" x2="1055" y2="86" stroke="var(--muted)" stroke-width="2"/><circle class="bulb" cx="1055" cy="92" r="7" style="animation-delay:-0.5s"/><line x1="1140" y1="72" x2="1140" y2="82" stroke="var(--muted)" stroke-width="2"/><circle class="bulb" cx="1140" cy="88" r="7" style="animation-delay:-1.0s"/><line x1="1225" y1="68" x2="1225" y2="78" stroke="var(--muted)" stroke-width="2"/><circle class="bulb" cx="1225" cy="84" r="7" style="animation-delay:-1.5s"/><line x1="1310" y1="62" x2="1310" y2="72" stroke="var(--muted)" stroke-width="2"/><circle class="bulb" cx="1310" cy="78" r="7" style="animation-delay:-2.0s"/><line x1="1395" y1="56" x2="1395" y2="66" stroke="var(--muted)" stroke-width="2"/><circle class="bulb" cx="1395" cy="72" r="7" style="animation-delay:-0.0s"/><line x1="1480" y1="48" x2="1480" y2="58" stroke="var(--muted)" stroke-width="2"/><circle class="bulb" cx="1480" cy="64" r="7" style="animation-delay:-0.5s"/>
+  <!-- window -->
+  <rect class="wd2" x="102" y="112" width="276" height="346" rx="8"/>
+  <rect class="sk" x="116" y="126" width="248" height="318"/>
+  <g class="night"><circle cx="150" cy="170" r="2" fill="#FFFFFF"/><circle cx="210" cy="150" r="1.5" fill="#FFFFFF"/><circle cx="300" cy="190" r="2" fill="#FFFFFF"/><circle cx="330" cy="150" r="1.5" fill="#FFFFFF"/><circle cx="250" cy="230" r="1.5" fill="#FFFFFF"/><circle cx="170" cy="250" r="1.5" fill="#FFFFFF"/><circle cx="320" cy="180" r="24" fill="#F5F0E8"/><circle cx="330" cy="172" r="22" fill="var(--sky)"/></g>
+  <g class="day" fill="#FFFFFF"><ellipse cx="190" cy="190" rx="40" ry="16"/><ellipse cx="215" cy="178" rx="26" ry="18"/><ellipse cx="300" cy="245" rx="34" ry="13"/></g>
+  <rect x="118" y="350" width="40" height="100" fill="var(--sky-2)" opacity=".55"/><rect x="162" y="318" width="34" height="132" fill="var(--sky-2)" opacity=".55"/><rect x="200" y="365" width="46" height="85" fill="var(--sky-2)" opacity=".55"/><rect x="250" y="300" width="38" height="150" fill="var(--sky-2)" opacity=".55"/><rect x="292" y="340" width="44" height="110" fill="var(--sky-2)" opacity=".55"/><rect x="340" y="328" width="24" height="122" fill="var(--sky-2)" opacity=".55"/><rect x="128" y="365" width="5" height="7" fill="#FFB37A" class="night"/><rect x="140" y="380" width="5" height="7" fill="#FFB37A" class="night"/><rect x="172" y="335" width="5" height="7" fill="#FFB37A" class="night"/><rect x="176" y="360" width="5" height="7" fill="#FFB37A" class="night"/><rect x="214" y="380" width="5" height="7" fill="#FFB37A" class="night"/><rect x="262" y="320" width="5" height="7" fill="#FFB37A" class="night"/><rect x="270" y="345" width="5" height="7" fill="#FFB37A" class="night"/><rect x="302" y="355" width="5" height="7" fill="#FFB37A" class="night"/><rect x="345" y="345" width="5" height="7" fill="#FFB37A" class="night"/>
+  <rect class="wd" x="236" y="126" width="8" height="318"/><rect class="wd" x="116" y="280" width="248" height="8"/>
+  <rect class="wd2" x="92" y="452" width="296" height="14" rx="4"/>
+  <rect x="80" y="96" width="320" height="8" rx="4" fill="var(--muted)"/>
+  <path class="cur" d="M86 100 h46 v360 q-14 10 -46 6 z"/><path class="cur" d="M348 100 h46 v366 q-32 4 -46 -6 z"/>
+  <!-- wainscot + floor -->
+  <rect class="wn" y="520" width="1600" height="140"/><rect class="wl" x="14" y="540" width="72" height="98" rx="6"/><rect class="wl" x="114" y="540" width="72" height="98" rx="6"/><rect class="wl" x="214" y="540" width="72" height="98" rx="6"/><rect class="wl" x="314" y="540" width="72" height="98" rx="6"/><rect class="wl" x="414" y="540" width="72" height="98" rx="6"/><rect class="wl" x="514" y="540" width="72" height="98" rx="6"/><rect class="wl" x="614" y="540" width="72" height="98" rx="6"/><rect class="wl" x="714" y="540" width="72" height="98" rx="6"/><rect class="wl" x="814" y="540" width="72" height="98" rx="6"/><rect class="wl" x="914" y="540" width="72" height="98" rx="6"/><rect class="wl" x="1014" y="540" width="72" height="98" rx="6"/><rect class="wl" x="1114" y="540" width="72" height="98" rx="6"/><rect class="wl" x="1214" y="540" width="72" height="98" rx="6"/><rect class="wl" x="1314" y="540" width="72" height="98" rx="6"/><rect class="wl" x="1414" y="540" width="72" height="98" rx="6"/><rect class="wl" x="1514" y="540" width="72" height="98" rx="6"/>
+  <rect class="wd2" y="510" width="1600" height="12"/>
+  <rect class="fl" y="660" width="1600" height="240"/><line class="fll" x1="0" y1="705" x2="1600" y2="705"/><line class="fll" x1="0" y1="755" x2="1600" y2="755"/><line class="fll" x1="0" y1="815" x2="1600" y2="815"/><line class="fll" x1="0" y1="880" x2="1600" y2="880"/><line class="fll" x1="220" y1="664" x2="220" y2="705"/><line class="fll" x1="760" y1="664" x2="760" y2="705"/><line class="fll" x1="1320" y1="664" x2="1320" y2="705"/><line class="fll" x1="480" y1="705" x2="480" y2="755"/><line class="fll" x1="1050" y1="705" x2="1050" y2="755"/><line class="fll" x1="130" y1="755" x2="130" y2="815"/><line class="fll" x1="890" y1="755" x2="890" y2="815"/><line class="fll" x1="1420" y1="755" x2="1420" y2="815"/><line class="fll" x1="600" y1="815" x2="600" y2="880"/><line class="fll" x1="1200" y1="815" x2="1200" y2="880"/>
+  <rect class="wd2" y="652" width="1600" height="12"/>
+  <ellipse cx="800" cy="840" rx="430" ry="46" fill="var(--gold)" opacity=".18"/>
+  <!-- clock -->
+  <circle cx="1300" cy="175" r="62" fill="var(--wood-2)"/><circle cx="1300" cy="175" r="52" fill="#F7F3EC"/>
+  <g fill="#14213A"><rect x="1298" y="127" width="4" height="9" transform="rotate(0 1300 175)"/><rect x="1298" y="127" width="4" height="9" transform="rotate(30 1300 175)"/><rect x="1298" y="127" width="4" height="9" transform="rotate(60 1300 175)"/><rect x="1298" y="127" width="4" height="9" transform="rotate(90 1300 175)"/><rect x="1298" y="127" width="4" height="9" transform="rotate(120 1300 175)"/><rect x="1298" y="127" width="4" height="9" transform="rotate(150 1300 175)"/><rect x="1298" y="127" width="4" height="9" transform="rotate(180 1300 175)"/><rect x="1298" y="127" width="4" height="9" transform="rotate(210 1300 175)"/><rect x="1298" y="127" width="4" height="9" transform="rotate(240 1300 175)"/><rect x="1298" y="127" width="4" height="9" transform="rotate(270 1300 175)"/><rect x="1298" y="127" width="4" height="9" transform="rotate(300 1300 175)"/><rect x="1298" y="127" width="4" height="9" transform="rotate(330 1300 175)"/></g>
+  <rect id="hH" class="clock-hand" x="1297" y="145" width="6" height="34" rx="3" fill="#14213A"/>
+  <rect id="hM" class="clock-hand" x="1298.5" y="132" width="3" height="47" rx="2" fill="#14213A"/>
+  <circle cx="1300" cy="175" r="5" fill="#FF6A14"/>
+  <!-- shelf with game boxes + trophy -->
+  <rect class="wd2" x="1150" y="420" width="320" height="14" rx="3"/>
+  <path d="M1170 434 l14 22 h8 l-6 -22 z M1430 434 l-14 22 h-8 l6 -22 z" class="wd2"/>
+  <rect x="1172" y="338" width="34" height="82" rx="4" fill="#F5F0E8"/><rect x="1210" y="350" width="30" height="70" rx="4" fill="#4FE3C1"/>
+  <rect x="1244" y="330" width="36" height="90" rx="4" fill="#FF6A14"/><rect x="1284" y="356" width="30" height="64" rx="4" fill="#6F93FF"/>
+  <rect x="1178" y="352" width="22" height="5" rx="2" fill="#2A1B00" opacity=".4"/><rect x="1250" y="346" width="24" height="5" rx="2" fill="#2A1B00" opacity=".4"/>
+  <g transform="translate(1380 340)"><path d="M0 0 h50 v18 a25 25 0 0 1 -50 0 z" fill="#FF8A3D"/><path d="M0 6 h-12 a10 10 0 0 0 12 16 M50 6 h12 a10 10 0 0 1 -12 16" fill="none" stroke="#FF8A3D" stroke-width="5"/>
+    <rect x="20" y="42" width="10" height="20" fill="#D9530A"/><rect x="8" y="62" width="34" height="16" rx="3" fill="var(--wood-2)"/><text x="25" y="22" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="800" font-size="13" fill="#1A0800">4.8★</text></g>
+  <!-- floor plant -->
+  <path class="pot" d="M120 760 h96 l-12 96 h-72 z"/><rect x="112" y="750" width="112" height="16" rx="5" fill="#A9552F"/>
+  <path class="leaf" d="M168 752 C120 700 70 640 60 560 C120 600 160 660 168 752z"/><path class="leaf2" d="M168 752 C170 660 190 600 240 540 C250 620 210 690 168 752z"/>
+  <path class="leaf" d="M168 752 C150 680 140 610 168 520 C196 610 186 680 168 752z"/><path class="leaf2" d="M168 752 C220 720 270 700 300 650 C290 720 240 750 168 752z"/>
+  <!-- chair -->
+  <rect class="wd2" x="1330" y="690" width="130" height="16" rx="5"/><rect class="wd2" x="1336" y="706" width="12" height="150"/><rect class="wd2" x="1444" y="706" width="12" height="150"/>
+  <rect class="wd" x="1336" y="560" width="12" height="134"/><rect class="wd" x="1444" y="560" width="12" height="134"/><rect class="wd" x="1336" y="560" width="120" height="16" rx="5"/>
+  <rect x="1340" y="660" width="112" height="34" rx="14" fill="#4FE3C1"/>
+  <!-- lamp light -->
+  <path class="lampc" d="M452 470 L330 600 L560 600 Z"/>
+  <!-- desk -->
+  <rect class="wd" x="300" y="598" width="1000" height="36" rx="6"/>
+  <rect class="wd2" x="330" y="634" width="240" height="226"/><rect class="wd2" x="1030" y="634" width="240" height="226"/>
+  <rect class="wd2" x="570" y="634" width="460" height="40"/>
+  <rect x="350" y="650" width="200" height="62" rx="5" fill="none" stroke="var(--wood)" stroke-width="4"/><rect x="432" y="678" width="36" height="6" rx="3" fill="var(--muted)"/><rect x="350" y="722" width="200" height="62" rx="5" fill="none" stroke="var(--wood)" stroke-width="4"/><rect x="432" y="750" width="36" height="6" rx="3" fill="var(--muted)"/><rect x="350" y="794" width="200" height="62" rx="5" fill="none" stroke="var(--wood)" stroke-width="4"/><rect x="432" y="822" width="36" height="6" rx="3" fill="var(--muted)"/><rect x="1050" y="650" width="200" height="62" rx="5" fill="none" stroke="var(--wood)" stroke-width="4"/><rect x="1132" y="678" width="36" height="6" rx="3" fill="var(--muted)"/><rect x="1050" y="722" width="200" height="62" rx="5" fill="none" stroke="var(--wood)" stroke-width="4"/><rect x="1132" y="750" width="36" height="6" rx="3" fill="var(--muted)"/><rect x="1050" y="794" width="200" height="62" rx="5" fill="none" stroke="var(--wood)" stroke-width="4"/><rect x="1132" y="822" width="36" height="6" rx="3" fill="var(--muted)"/>
+  <!-- lamp -->
+  <ellipse cx="400" cy="596" rx="38" ry="8" fill="#3A4660"/><path d="M400 594 L430 520 L468 478" fill="none" stroke="#3A4660" stroke-width="8" stroke-linecap="round"/>
+  <path d="M440 470 l46 -26 l22 40 l-46 14 z" fill="#FF6A14"/><circle cx="458" cy="488" r="7" fill="#FFD2B0" class="night"/>
+  <!-- pencil cup + mug -->
+  <rect x="500" y="556" width="34" height="42" rx="5" fill="#C8693E"/><rect x="506" y="532" width="5" height="28" fill="#6F93FF" transform="rotate(-8 508 546)"/><rect x="516" y="528" width="5" height="30" fill="#4FE3C1"/><rect x="525" y="534" width="5" height="26" fill="#FF6A14" transform="rotate(10 527 547)"/>
+  <rect x="1090" y="566" width="40" height="32" rx="6" fill="#F7F3EC"/><path d="M1130 574 a10 10 0 0 1 0 18" fill="none" stroke="#F7F3EC" stroke-width="6"/>
+  <!-- desk plant -->
+  <path class="pot" d="M1190 560 h56 l-6 38 h-44 z"/><path class="leaf" d="M1218 562 C1200 530 1180 510 1172 480 C1200 494 1214 520 1218 562z"/><path class="leaf2" d="M1218 562 C1226 520 1240 500 1266 484 C1262 520 1240 544 1218 562z"/>
+  <!-- monitor -->
+  <rect x="770" y="540" width="60" height="58" fill="#2A3550"/><ellipse cx="800" cy="598" rx="90" ry="9" fill="#2A3550"/>
+  <rect x="604" y="330" width="392" height="226" rx="16" fill="#2A3550"/>
+</svg>
+        <a class="frame" href="https://www.behance.net/sumitmaurya_35" target="_blank" rel="noopener" style="left:27.06%;top:15.56%;width:6.50%"><span class="fr"><span class="mat be">Bē</span></span><span class="tagx">Behance</span></a><a class="frame" href="https://www.linkedin.com/in/sumit-maurya-b760b6243/" target="_blank" rel="noopener" style="left:34.94%;top:15.56%;width:6.50%"><span class="fr"><span class="mat li-in">in</span></span><span class="tagx">LinkedIn</span></a><a class="frame" href="resume.pdf" target="_blank" rel="noopener" style="left:42.81%;top:15.56%;width:6.50%"><span class="fr"><span class="mat cv">CV<i></i><i></i></span></span><span class="tagx">Resume</span></a><a class="frame" href="https://play.google.com/store/apps/dev?id=5886684719149194265" target="_blank" rel="noopener" style="left:50.69%;top:15.56%;width:6.50%"><span class="fr"><span class="mat "><img src="icon-play.webp" alt=""></span></span><span class="tagx">Google Play</span></a><a class="frame" href="https://wa.me/918780778682" target="_blank" rel="noopener" style="left:58.56%;top:15.56%;width:6.50%"><span class="fr"><span class="mat wa"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3zm0 2a7 7 0 1 1-3.6 13l-.3-.2-2.7.7.7-2.6-.2-.3A7 7 0 0 1 12 5zm-2.6 3.2c-.2 0-.5 0-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.8 2.2.9 2.6.7 3.1.6.5 0 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2l-.5-.3-1.7-.8c-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a5.7 5.7 0 0 1-2.9-2.5c-.2-.4.2-.4.6-1.2.1-.2 0-.3 0-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4z"/></svg></span></span><span class="tagx">WhatsApp</span></a><a class="frame" href="mailto:sumitmaurya0402@gmail.com" style="left:66.44%;top:15.56%;width:6.50%"><span class="fr"><span class="mat "><img src="icon-gmail.webp" alt=""></span></span><span class="tagx">Email</span></a>
+        <button class="screen" type="button" id="screen" aria-label="Mini game: tap to score a point">
+          <span class="bar2"><span>FUNMINT · BLOCKS</span><span>SCORE <b id="score">000</b></span></span>
+          <span class="grid" id="cells"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          <span class="hint">Tap the screen or the gamepad</span>
+        </button>
+        <button class="pad" type="button" id="pad" aria-label="Gamepad: tap to score a point"><svg viewBox="0 0 120 70"><path d="M20 10h80a18 18 0 0 1 17 22l-6 24a12 12 0 0 1-21 4l-8-10H38l-8 10a12 12 0 0 1-21-4L3 32A18 18 0 0 1 20 10z" fill="#3A4660"/><path d="M28 30h18M37 21v18" stroke="#F5F0E8" stroke-width="6" stroke-linecap="round"/><circle cx="84" cy="24" r="6" fill="#F5F0E8"/><circle cx="96" cy="34" r="6" fill="#4FE3C1"/><circle cx="72" cy="34" r="6" fill="#FF6A14"/><circle cx="84" cy="44" r="6" fill="#6F93FF"/></svg></button>
+      </div>
+      <div class="links">
+        <a class="lnk" href="https://wa.me/918780778682" target="_blank" rel="noopener"><span class="li wa" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3zm0 2a7 7 0 1 1-3.6 13l-.3-.2-2.7.7.7-2.6-.2-.3A7 7 0 0 1 12 5zm-2.6 3.2c-.2 0-.5 0-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.8 2.2.9 2.6.7 3.1.6.5 0 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2l-.5-.3-1.7-.8c-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a5.7 5.7 0 0 1-2.9-2.5c-.2-.4.2-.4.6-1.2.1-.2 0-.3 0-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4z"/></svg></span><span class="txt"><b>WhatsApp</b><small>+91 87807 78682</small></span><span class="arrow">↗</span></a>
+        <div class="lnk" style="cursor:default"><img class="li img" src="icon-gmail.webp" alt="" width="40" height="40"><span class="txt"><b>Email</b><small id="mail">sumitmaurya0402@gmail.com</small></span><button class="copy" type="button" id="copyMail">Copy</button></div>
+        <a class="lnk" href="https://www.behance.net/sumitmaurya_35" target="_blank" rel="noopener"><span class="li be" aria-hidden="true">Bē</span><span class="txt"><b>Behance</b><small>See my UI and art work</small></span><span class="arrow">↗</span></a>
+        <a class="lnk" href="https://www.linkedin.com/in/sumit-maurya-b760b6243/" target="_blank" rel="noopener"><span class="li ln" aria-hidden="true">in</span><span class="txt"><b>LinkedIn</b><small>Let's connect</small></span><span class="arrow">↗</span></a>
+        <a class="lnk" href="resume.pdf" target="_blank" rel="noopener"><span class="li cv" aria-hidden="true">CV</span><span class="txt"><b>Resume</b><small>One page PDF</small></span><span class="arrow">↗</span></a>
+        <a class="lnk" href="https://play.google.com/store/apps/dev?id=5886684719149194265" target="_blank" rel="noopener"><img class="li img" src="icon-play.webp" alt="" width="40" height="40"><span class="txt"><b>Google Play</b><small>FunMint Games</small></span><span class="arrow">↗</span></a>
+      </div>
+      <p class="mail-line">Email: <span>sumitmaurya0402@gmail.com</span> · WhatsApp: <span>+91 87807 78682</span></p>
+      <div class="end"><span class="logo-tile" role="img" aria-label="FunMint Games logo"></span><span>© 2026 Sumit Maurya · FunMint Games · Ahmedabad, India</span></div>
+    </div>
+  </section>
+</main>
+</div>
+
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-labelledby="lbTitle" hidden>
+  <div class="lb-bg" data-close></div>
+  <div class="lb-in">
+    <button class="lb-x" type="button" data-close aria-label="Close screens">✕</button>
+    <div class="lb-stage">
+      <button class="lb-nav prev" type="button" id="lbPrev" aria-label="Previous screen">←</button>
+      <figure class="lb-phone"><img id="lbImg" alt=""></figure>
+      <button class="lb-nav next" type="button" id="lbNext" aria-label="Next screen">→</button>
+    </div>
+    <div class="lb-info">
+      <span class="lb-game" id="lbGame"></span>
+      <span class="lb-count" id="lbCount"></span>
+      <h3 id="lbTitle"></h3>
+      <p id="lbNote"></p>
+      <div class="lb-thumbs" id="lbThumbs"></div>
+      <span class="lb-hint">Use ← → keys or swipe</span>
+    </div>
+  </div>
+</div>
+
+<nav class="dock" aria-label="Sections">
+  <a href="#home" class="on">Home</a>
+  <a href="#games">Games</a>
+  <a href="#ui"><span class="d">UI Work</span><span class="m">UI</span></a>
+  <a href="#journey">Journey</a>
+  <a href="#skills">Skills</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- floating puzzle-block world ---------- */
+  var cv=document.getElementById('world'), ctx=cv.getContext('2d'), W=0,H=0,dpr=1, blocks=[], cols=[], alpha=.16, mx=0,my=0, sy=0;
+  function readTheme(){var cs=getComputedStyle(root);cols=['--tile-a','--tile-b','--tile-c'].map(function(k){return cs.getPropertyValue(k).trim()});
+    alpha=parseFloat(cs.getPropertyValue('--tile-alpha'))||.16}
+  function rand(a,b){return a+Math.random()*(b-a)}
+  function build(){
+    dpr=Math.min(window.devicePixelRatio||1,2);W=innerWidth;H=innerHeight;
+    cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+    var n=Math.round(Math.min(34,Math.max(14,W*H/38000)));blocks=[];
+    for(var i=0;i<n;i++){var z=rand(.35,1);blocks.push({x:rand(0,W),y:rand(0,H),s:rand(16,58)*z,z:z,r:rand(0,6.28),vr:rand(-.25,.25),
+      vy:rand(6,16)*z,c:i%3,shape:Math.random()<.22?1:0})}
+  }
+  function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+  function draw(dt){
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<blocks.length;i++){var b=blocks[i];
+      if(dt){b.y-=b.vy*dt;b.r+=b.vr*dt;if(b.y<-80){b.y=H+80;b.x=rand(0,W)}}
+      var px=b.x+mx*18*b.z, py=b.y+my*12*b.z-sy*.06*b.z;
+      py=((py%(H+160))+(H+160))%(H+160)-80;
+      ctx.save();ctx.translate(px,py);ctx.rotate(b.r);
+      var a=alpha*(.5+b.z*.7), c=cols[b.c];
+      ctx.fillStyle='rgba('+c+','+a+')';
+      if(b.shape){ctx.beginPath();ctx.arc(0,0,b.s/2,0,6.283);ctx.fill()}
+      else{rr(-b.s/2,-b.s/2,b.s,b.s,b.s*.24);ctx.fill();
+        ctx.fillStyle='rgba(0,0,0,'+(a*.5)+')';rr(-b.s/2,b.s/2-b.s*.16,b.s,b.s*.16,b.s*.08);ctx.fill()}
+      ctx.restore();}
+  }
+  var last=0;
+  function loop(t){var dt=last?Math.min((t-last)/1000,.05):0;last=t;draw(dt);if(!document.hidden)requestAnimationFrame(loop);else last=0}
+  readTheme();build();draw(0);
+  addEventListener('resize',function(){build();draw(0)});
+  if(!reduce){
+    requestAnimationFrame(loop);
+    document.addEventListener('visibilitychange',function(){if(!document.hidden)requestAnimationFrame(loop)});
+    addEventListener('pointermove',function(e){mx=e.clientX/W-.5;my=e.clientY/H-.5},{passive:true});
+    addEventListener('scroll',function(){sy=scrollY},{passive:true});
+  }
+
+  /* ---------- theme ---------- */
+  var btn=document.getElementById('theme'), icon=document.getElementById('themeIcon');
+  var MOON="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z", SUN="M12 4V2M12 22v-2M4 12H2M22 12h-2M5.6 5.6 4.2 4.2M19.8 19.8l-1.4-1.4M5.6 18.4l-1.4 1.4M19.8 4.2l-1.4 1.4M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z";
+  function isLight(){var t=root.dataset.theme;return t?t==='light':matchMedia('(prefers-color-scheme: light)').matches}
+  function paint(){icon.setAttribute('d',isLight()?MOON:SUN);btn.setAttribute('aria-label',isLight()?'Switch to dark theme':'Switch to light theme');readTheme();draw(0)}
+  try{var saved=localStorage.getItem('sm-theme');if(saved)root.dataset.theme=saved}catch(e){}
+  paint();
+  btn.addEventListener('click',function(){var n=isLight()?'dark':'light';root.dataset.theme=n;try{localStorage.setItem('sm-theme',n)}catch(e){}paint()});
+  matchMedia('(prefers-color-scheme: light)').addEventListener('change',paint);
+
+  /* ---------- clock ---------- */
+  var clock=document.getElementById('clock');
+  function tick(){try{var d=new Date();
+    var t=d.toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',hour12:true}).toUpperCase();
+    var day=d.toLocaleDateString('en-IN',{timeZone:'Asia/Kolkata',weekday:'short',day:'numeric',month:'short'});
+    clock.textContent='AHMEDABAD · '+t+' IST · '+day}catch(e){}}
+  tick();setInterval(tick,15000);
+
+  /* ---------- level map ---------- */
+  var IC={
+    art:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.6 7.6"/><circle cx="11" cy="11" r="2"/></svg>',
+    flow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="15" y="15" width="6" height="6" rx="1.5"/><path d="M9 6h4a2 2 0 0 1 2 2v7"/></svg>',
+    ui:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M9 7h6M9 11h6"/><rect x="9" y="15" width="6" height="3" rx="1"/></svg>',
+    play:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="12" rx="5"/><path d="M7 11v4M5 13h4"/><circle cx="16" cy="12" r="1" fill="currentColor"/><circle cx="18" cy="14.5" r="1" fill="currentColor"/></svg>',
+    lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>'
+  };
+  var levels=[
+    {name:'Arth I-Soft',role:'2D Game Designer',time:'Jan 2023 – Jun 2025',short:"'23 – '25",icon:'art',
+     text:'Created 2D game art: characters, backgrounds, props, icons and UI. Made marketing visuals in Photoshop and prepared game-ready sprites for the dev team.',skills:['Characters & props','Icons & UI','Game-ready sprites']},
+    {name:'mFinity InfoTech',role:'Game Designer',time:'Jul – Dec 2025',short:"Jul – Dec '25",icon:'flow',
+     text:'Worked on game design and online graphics for mobile games. Designed game screens, banners and promotional creatives.',skills:['Game design','Game screens','Banners & promos']},
+    {name:'Funcell Games',role:'UI Designer',time:'Dec 2025 – 30 Sep 2026',short:"'25 – Sep '26",icon:'ui',
+     text:'Designed in-game UI: HUD, main menu, shop/IAP, offer popups, rewards and settings. Built 9-slice buttons, panels and icons with all states for Unity, and handed off specs to developers.',skills:['HUD & menus','Shop & IAP','9-slice UI','Unity handoff']},
+    {name:'FunMint Games',role:'Indie Game Developer',time:'30 Sep 2026 – now',short:'Sep ’26 – now',icon:'play',now:true,
+     text:'My own studio. I design, build and publish my own mobile games on Google Play: 2 live, 6 coming soon.',skills:['Game design','Game UI','Publishing']}
+  ];
+  var LAYOUT={
+    wide:{vb:'0 0 1000 460',ratio:'1000/460',
+      pts:[[90,300],[320,140],[550,300],[770,140],[935,290]],
+      road:'M90 300 C200 300 210 140 320 140 S440 300 550 300 S660 140 770 140',
+      next:'M770 140 C860 140 850 290 935 290',
+      sides:['b','t','b','t','b']},
+    tall:{vb:'0 0 400 820',ratio:'400/820',
+      pts:[[90,740],[300,570],[100,400],[300,230],[150,80]],
+      road:'M90 740 C90 650 300 660 300 570 S100 490 100 400 S300 320 300 230',
+      next:'M300 230 C300 140 150 170 150 80',
+      sides:['r','l','r','l','r']}
+  };
+  var board=document.getElementById('board'), svg=document.getElementById('mapSvg'), card=document.getElementById('card');
+  var pEdge=document.getElementById('pEdge'),pRoad=document.getElementById('pRoad'),pDone=document.getElementById('pDone'),pNext=document.getElementById('pNext');
+  var wraps=[], nodes=[], cur=3, mqTall=matchMedia('(max-width: 640px)');
+  levels.concat([{lock:true,name:'Next level',short:'Locked'}]).forEach(function(l,i){
+    var w=document.createElement('div');w.className='lvl'+(l.now?' is-now':'')+(l.lock?' is-lock':'');
+    var b=document.createElement(l.lock?'div':'button');
+    b.className='node'+(l.now?' now':'')+(l.lock?' lock':'');
+    if(l.lock){b.innerHTML=IC.lock;b.setAttribute('aria-hidden','true')}
+    else{b.type='button';b.textContent=i+1;b.setAttribute('aria-label','Level '+(i+1)+': '+l.name);b.addEventListener('click',function(){show(i)})}
+    w.appendChild(b);
+    var pl=document.createElement('div');pl.className='plate'+(l.now?' has-face':'');
+    var inner='<b>'+l.name+'</b><span>'+(l.lock?'Loading…':(l.now?'NOW · ':'<i class="stars">★★★</i> ')+l.short)+'</span>';
+    pl.innerHTML=l.now?'<i class="face" aria-hidden="true"></i><div class="txt">'+inner+'</div>':inner;
+    pl.querySelectorAll('i').forEach(function(x){x.style.fontStyle='normal'});
+    w.appendChild(pl);board.appendChild(w);wraps.push(w);if(!l.lock)nodes.push(b);
+  });
+  function layout(){
+    var L=mqTall.matches?LAYOUT.tall:LAYOUT.wide, vb=L.vb.split(' ').map(Number);
+    svg.setAttribute('viewBox',L.vb);board.style.aspectRatio=L.ratio;
+    [pEdge,pRoad,pDone].forEach(function(p){p.setAttribute('d',L.road)});pNext.setAttribute('d',L.next);
+    wraps.forEach(function(w,i){var pt=L.pts[i];w.style.left=(pt[0]/vb[2]*100)+'%';w.style.top=(pt[1]/vb[3]*100)+'%';
+      w.classList.remove('side-r','side-l','side-t','side-b');if(L.sides)w.classList.add('side-'+L.sides[i])});
+  }
+  layout();mqTall.addEventListener('change',layout);
+  function show(i){
+    cur=i;var l=levels[i];
+    nodes.forEach(function(n,k){n.setAttribute('aria-pressed',k===i?'true':'false')});
+    card.innerHTML=(l.now?'<div class="ico logo" role="img" aria-label="FunMint Games logo"></div>':'<div class="ico" aria-hidden="true">'+IC[l.icon]+'</div>')+
+      '<div class="card-txt"><span class="eyebrow">Level '+(i+1)+(l.now?' · <span class="live">Now playing</span>':' · Completed ★★★')+'</span>'+
+      '<h3>'+l.name+'</h3><span class="meta">'+l.role+' <span>· '+l.time+'</span></span><p>'+l.text+'</p>'+
+      '<div class="skills">'+l.skills.map(function(s){return '<span>'+s+'</span>'}).join('')+'</div></div>'+
+      '<div class="nav-lv"><span class="count">'+(i+1)+' / '+levels.length+'</span><div class="steps">'+
+      '<button class="btn icon-btn" type="button" data-d="-1" aria-label="Previous level"'+(i===0?' disabled':'')+'>←</button>'+
+      '<button class="btn icon-btn" type="button" data-d="1" aria-label="Next level"'+(i===levels.length-1?' disabled':'')+'>→</button></div></div>';
+    card.classList.remove('card-enter');void card.offsetWidth;card.classList.add('card-enter');
+  }
+  card.addEventListener('click',function(e){var b=e.target.closest('[data-d]');if(b&&!b.disabled)show(cur+ +b.dataset.d)});
+  show(3);
+
+  /* ---------- room clock ---------- */
+  var hH=document.getElementById('hH'),hM=document.getElementById('hM');
+  function hands(){try{var p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kolkata',hour:'numeric',minute:'numeric',hour12:false}).formatToParts(new Date());
+    var h=+p.find(function(x){return x.type==='hour'}).value,m=+p.find(function(x){return x.type==='minute'}).value;
+    hM.style.transform='rotate('+(m*6)+'deg)';hH.style.transform='rotate('+((h%12)*30+m*.5)+'deg)'}catch(e){}}
+  hands();setInterval(hands,20000);
+
+  /* ---------- desk mini game ---------- */
+  var cells=[].slice.call(document.querySelectorAll('#cells i')),scoreEl=document.getElementById('score'),room=document.getElementById('room'),score=0;
+  var COL=['g','m','o','b'];
+  cells.forEach(function(c,i){if(i>=14&&Math.random()<.6)c.className=COL[i%4]});
+  function hit(ev){score++;scoreEl.textContent=('00'+score).slice(-3);
+    var empty=cells.filter(function(c){return !c.className}),c=empty.length?empty[Math.floor(Math.random()*empty.length)]:cells[Math.floor(Math.random()*cells.length)];
+    if(!empty.length)cells.forEach(function(x,i){if(i<14)x.className=''});
+    c.className=COL[Math.floor(Math.random()*4)]+' hit';setTimeout(function(){c.classList.remove('hit')},220);
+    var r=room.getBoundingClientRect(),t=ev.currentTarget.getBoundingClientRect(),p=document.createElement('span');
+    p.className='plus';p.textContent='+1';p.style.left=((t.left+t.width/2-r.left)/r.width*100)+'%';p.style.top=((t.top-r.top)/r.height*100)+'%';
+    room.appendChild(p);setTimeout(function(){p.remove()},750)}
+  document.getElementById('screen').addEventListener('click',hit);document.getElementById('pad').addEventListener('click',hit);
+
+  /* ---------- UI work viewer ---------- */
+  var UI={"lc": {"game": "Lumina Castle Match", "tag": "Client work · Match-3", "ratio": "1400/788", "land": true, "screens": [["lc-loading", "Loading", "Shield-style logo with the two heroes, a pink progress bar and a gameplay tip."], ["lc-title", "Title screen", "Logo over a soft-focus castle, so the Play button stays the clear focus."], ["lc-map", "Map HUD", "Avatar, lives, stars and coins in pills across the top. Task, castle and trophy buttons bottom-left, next level bottom-right."], ["lc-levelstart", "Level start", "Target items with counts, unlocked and locked booster slots, and Menu / Play."], ["lc-gameplay", "Gameplay", "Moves and goals panel with the hero portrait on the left, a timer on top and four boosters on the right."], ["lc-welldone", "Level complete", "Star on a cushion, the coin reward, a 2X coin ad option and a next-reward reminder from the princess."], ["lc-outofmoves", "Out of moves", "Shows what is still missing (25/40) before the offer: +5 moves and boosters, free with an ad or 1300 coins."], ["lc-quit", "Level quit", "Warns the player they will lose a life, with Play on as the green, safe choice."], ["lc-nolives", "No more lives", "Refill timer, a free option with an ad, and Ask for life."], ["lc-hammer", "Booster info", "Power Hammer explained in one line, with the coin price on the button."], ["lc-store1", "Royal Store", "Festival pass with a Best Value tag, a one-time starter pack with a struck-out price, and a time saver pack."], ["lc-store2", "Royal Store · more offers", "Coin and booster bundles in one card system, so prices line up and compare easily."], ["lc-removeads", "Remove ads", "A simple choice: Later in blue, USD $7.99 in green."], ["lc-buyok", "Purchase successful", "Green scene, a happy princess and one Continue button."], ["lc-buyfail", "Purchase failed", "Same layout in red with a sad princess, so the state reads at a glance."], ["lc-playtime", "Playtime rewards", "Best streak, next milestone and a reward track by minutes played, with Claim and timer states."], ["lc-leaderboard", "Leaderboard", "Friends / Players / Teams tabs, an India / World filter, medal ranks and the player's own row in green."], ["lc-settings", "Settings", "Profile, sound / music / notification / vibrate toggles, quick actions, and support and data options."], ["lc-inbox", "Inbox", "Empty state that asks the player to connect Facebook."], ["lc-notifications", "Notification plan", "In-app and push notification plan: trigger, message, how often and the goal for each one."]]}, "pp": {"game": "Pull the Pin", "tag": "Client work · Halloween puzzle", "ratio": "1125/2436", "screens": [["pp-loading", "Loading", "Pipe-frame logo with glowing skulls and green potion smoke, over a dim haunted path, with a chunky green progress bar."], ["pp-title", "Title screen", "Vampire kid mascot, the logo up top and one big green Play button at thumb height."], ["pp-map", "Level map", "Skull coins and gems top-left, Shop / Task / Spin on the left, free coin and gem ad rewards on the right, and the player's avatar on the current level."], ["pp-gameplay", "Gameplay", "Skull-ball funnel with bone pins to pull, a cauldron as the goal, and restart and settings in the corners."], ["pp-settings", "Settings", "Girl / boy avatar choice, sound and music sliders, a vibrate toggle, and Home / Quit."], ["pp-daily", "Daily reward", "Seven-day calendar: claimed, today in green and a big Day 7 gift as the hook."], ["pp-spin", "Spin", "Crystal-ball spin machine with one free spin and an extra spin for watching an ad."], ["pp-trophy", "Trophy track", "Six trophy tiers on one track, a weekly timer and a chest to catch up on missed rewards."], ["pp-leaderboard", "Leaderboard", "Haunted podium for the top 3, a timer, the rank reward, and the player's row pinned in green above Claim."], ["pp-collections", "Collections", "Board themes with Selected, Select and coin-price states, plus a bottom tab bar."]]}, "as": {"game": "Animal Sort Puzzle", "tag": "Casual puzzle", "ratio": "1124/2436", "screens": [["as-home", "Home", "Coin counter top-left, spin wheel with a 3-spin badge, a no-ads shortcut and one big Play button. Three-tab nav with the active tab raised."], ["as-noads", "Remove-ads offer", "Value before price: 1500 coins, 5 undos and 2 swaps. A clear $9.99 button and a visible “I’m okay with ads for now” exit."], ["as-shop", "Shop", "Daily deal carousel with a 40% off badge, a no-forced-ads option, power-up packs and coin packs with a Best Price tag."], ["as-quest", "Quests", "Underwater hero art, a chest milestone at 6/10 and three task states: Claim, Go and Done."], ["as-loading", "Loading", "Game logo, the mascot trio and a chunky progress bar with a percentage."], ["as-play", "Gameplay", "Sort tubes with mystery blocks, undo and shuffle boosters, and the next animal waiting on a pedestal."]]}, "bl": {"game": "Block Link Puzzle", "tag": "Brain puzzle", "ratio": "1080/1920", "screens": [["bl-628", "Level 628", "“Think. Match. Conquer!” Pink board, the path line and a Winner tile as the goal."], ["bl-1099", "Level 1099 · Hard", "Hard-level tag with a flame icon and a red board to raise the tension."], ["bl-100", "Level 100 · Tutorial", "A Go! start marker and the tutorial hand show the first move."], ["bl-215", "Level 215", "“Smash Every Block!” Orange board with a glow on the active tile."], ["bl-426", "Level 426", "“Think You Can Solve It?” Green board. The same layout system works in every colour."]]}, "pw": {"game": "Pocket Warrior", "tag": "Practice project · RPG UI", "ratio": "1125/2436", "screens": [["pw-loading", "Loading", "Sword-and-shield logo over a night castle gate, a chunky gold loading bar and a gameplay tip."], ["pw-login", "Login", "Google, Facebook and Apple sign-in in one button style, with Guest Login as a lighter text option."], ["pw-home", "Home", "Profile, XP level and three currencies on top. Feature icons down both sides, chest and pass progress around a big Play button, and a 5-tab bar with the active tab raised."], ["pw-menu", "Side menu", "Settings, Achievement, Battery saver, Daily Bonus and Mail Box in a wooden dropdown."], ["pw-daily", "Daily login bonus", "Seven-day grid: Day 1 claimed in green, the rest locked, and the bigger chest rewards saved for the end of the week."], ["pw-inventory", "Inventory", "Items, Chests and Materials tabs, rarity frames by colour, item counts, slot usage (28/50) and a Sell mode."], ["pw-profile", "Profile", "Avatar, XP bar (4500/8000), top stats, a six-tile stats grid and the player's clan card."], ["pw-chat", "Chat", "Global, Guild and Private tabs, online status, a safety note, and chat bubbles that look different for you and other players."], ["pw-stage", "Stage rewards", "A vertical reward track: claimed, current in gold, a special chest stage in purple, and locked stages."], ["pw-offline", "No internet", "Clear error state with Retry and Settings buttons, using the same ribbon and panel kit."], ["pw-kit", "UI asset kit", "The reusable kit behind every screen: 11 button colours, feature icons, currency bars, progress bars, the ribbon header, item frames, the tab bar and an input field.", "2576/1384"]]}};
+  var lb=document.getElementById('lb'),lbImg=document.getElementById('lbImg'),lbPhone=lbImg.parentNode,lbThumbs=document.getElementById('lbThumbs');
+  var lbG=null,lbI=0,lastFocus=null;
+  function lbShow(i,dir){var g=UI[lbG],n=g.screens.length;lbI=(i+n)%n;var sc=g.screens[lbI];var r=sc[3]||g.ratio;lbPhone.style.setProperty('--ratio',r);var rr=r.split('/');lb.querySelector('.lb-in').classList.toggle('land',(+rr[0])>(+rr[1]));
+    lbImg.style.setProperty('--dir',(dir||0)*12+'px');lbImg.classList.add('swap');
+    var pre=new Image();pre.src='ui/'+sc[0]+'-f.webp';
+    pre.onload=pre.onerror=function(){lbImg.src=pre.src;lbImg.alt=g.game+': '+sc[1]+' screen';requestAnimationFrame(function(){lbImg.classList.remove('swap')})};
+    document.getElementById('lbGame').textContent=g.game+' · '+g.tag;
+    document.getElementById('lbCount').textContent='Screen '+(lbI+1)+' of '+n;
+    document.getElementById('lbTitle').textContent=sc[1];
+    document.getElementById('lbNote').textContent=sc[2];
+    [].forEach.call(lbThumbs.children,function(b,k){b.setAttribute('aria-current',k===lbI?'true':'false');if(k===lbI)lbThumbs.scrollLeft=b.offsetLeft-lbThumbs.clientWidth/2+b.offsetWidth/2});
+    var nx=new Image();nx.src='ui/'+g.screens[(lbI+1)%n][0]+'-f.webp';}
+  function lbOpen(key,i){lbG=key;lastFocus=document.activeElement;var g=UI[key];
+    lbPhone.style.setProperty('--ratio',g.ratio);lb.querySelector('.lb-in').classList.toggle('land',!!g.land);lbThumbs.classList.toggle('landg',!!g.land);
+    lbThumbs.innerHTML=g.screens.map(function(sc,k){return '<button type="button"'+(sc[3]?' class="w"':'')+' data-k="'+k+'" aria-label="'+sc[1]+'"><img src="ui/'+sc[0]+'-t.webp" alt=""></button>'}).join('');
+    lb.hidden=false;root.style.overflow='hidden';lbShow(i||0);lb.querySelector('.lb-x').focus()}
+  function lbClose(){lb.hidden=true;root.style.overflow='';if(lastFocus)lastFocus.focus()}
+  document.querySelectorAll('[data-open]').forEach(function(b){b.addEventListener('click',function(){lbOpen(b.dataset.open,+(b.dataset.start||0))})});
+  document.querySelectorAll('.wallg').forEach(function(w){w.addEventListener('click',function(e){var im=e.target.closest('img');lbOpen(w.dataset.game,im?+im.dataset.i:0)})});
+  lb.addEventListener('click',function(e){if(e.target.closest('[data-close]'))lbClose();var t=e.target.closest('[data-k]');if(t)lbShow(+t.dataset.k,+t.dataset.k>lbI?1:-1)});
+  document.getElementById('lbPrev').addEventListener('click',function(){lbShow(lbI-1,-1)});
+  document.getElementById('lbNext').addEventListener('click',function(){lbShow(lbI+1,1)});
+  document.addEventListener('keydown',function(e){if(lb.hidden)return;if(e.key==='Escape')lbClose();else if(e.key==='ArrowRight')lbShow(lbI+1,1);else if(e.key==='ArrowLeft')lbShow(lbI-1,-1);
+    else if(e.key==='Tab'){var f=[].slice.call(lb.querySelectorAll('button')),a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){z.focus();e.preventDefault()}else if(!e.shiftKey&&document.activeElement===z){a.focus();e.preventDefault()}}});
+  var sx=null;lbPhone.addEventListener('pointerdown',function(e){sx=e.clientX});
+  lbPhone.addEventListener('pointerup',function(e){if(sx===null)return;var dx=e.clientX-sx;sx=null;if(Math.abs(dx)>40)lbShow(lbI+(dx<0?1:-1),dx<0?1:-1)});
+
+  /* ---------- copy email ---------- */
+  var cb=document.getElementById('copyMail'),mail=document.getElementById('mail');
+  cb.addEventListener('click',function(){var t=mail.textContent;
+    function done(){cb.textContent='Copied';setTimeout(function(){cb.textContent='Copy'},1600)}
+    function sel(){var r=document.createRange();r.selectNodeContents(mail);var g=getSelection();g.removeAllRanges();g.addRange(r);cb.textContent='Selected'}
+    try{navigator.clipboard.writeText(t).then(done,sel)}catch(e){sel()}});
+
+  /* ---------- dock ---------- */
+  var links=[].slice.call(document.querySelectorAll('.dock a'));
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){
+      links.forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id)})}})},{rootMargin:'-45% 0px -50% 0px'});
+    links.forEach(function(a){var s=document.querySelector(a.getAttribute('href'));s&&io.observe(s)});
+  }
+})();
+</script>
+
+</body>
+</html>
