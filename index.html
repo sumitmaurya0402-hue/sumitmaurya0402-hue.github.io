@@ -523,6 +523,15 @@ h3,h4,.game h3,.soon-body h4,.card h3,.legend h3,.edu-card h3{font-family:var(--
 .skill-list span{color:var(--muted);font-size:16px;line-height:1.5}
 .proof{appearance:none;background:none;border:0;padding:8px 0;cursor:pointer;font:800 14px/1.2 var(--body);color:var(--gold-text);text-decoration:underline;text-underline-offset:4px;text-align:right;white-space:nowrap}
 .proof:hover{color:var(--ink)}
+/* ===== v20 hero ===== */
+.name-row{display:flex;align-items:center;gap:clamp(14px,2vw,24px)}
+.me{flex:none;width:clamp(84px,9vw,124px);height:clamp(84px,9vw,124px);max-width:none;border-radius:50%;object-fit:cover;object-position:50% 6%;
+  background:var(--surface-2);box-shadow:0 0 0 4px var(--bg),0 0 0 6px var(--gold)}
+.player{aspect-ratio:48/50}
+.phone.p1{top:9%}.phone.p2{top:2%}.phone.p3{top:10%}
+.player .shelf-note{position:absolute;left:0;right:0;bottom:0;margin:0;max-width:none;text-align:center;font:600 14px/1.4 var(--body);color:var(--muted)}
+@media (max-width:860px){.player{width:min(100%,420px);aspect-ratio:48/55}}
+
 @media (max-width:860px){.player{width:min(92%,400px)}}
 @media (max-width:560px){
   .skill-list li{grid-template-columns:1fr;gap:4px}
@@ -620,9 +629,9 @@ h3,h4,.game h3,.soon-body h4,.card h3,.legend h3,.edu-card h3{font-family:var(--
   <div class="wrap">
     <div class="hero" id="home">
       <div class="hero-copy">
-        <h1>Sumit<br><span class="gold">Maurya</span></h1>
+        <div class="name-row"><img class="me" src="sumit.webp" alt="Sumit Maurya" width="760" height="938"><h1>Sumit<br><span class="gold">Maurya</span></h1></div>
         <p class="lede">I design game UI: shops, popups, rewards and HUDs. Now I make my own games too.</p>
-        <p class="sub">3.5 years at Arth I-Soft, mFinity InfoTech and Funcell Games. Now I run FunMint Games: 2 games live on Google Play, 6 more coming.</p>
+        <p class="sub">3.5 years at Arth I-Soft, mFinity InfoTech and Funcell Games. Now I run FunMint Games: 6 games live on Google Play, 2 more coming.</p>
         <div class="ctas">
           <a class="btn btn-gold" href="https://play.google.com/store/apps/dev?id=5886684719149194265" target="_blank" rel="noopener">Play my games ↗</a>
           <a class="btn btn-ghost" href="#ui">See my UI work</a>
@@ -638,9 +647,7 @@ h3,h4,.game h3,.soon-body h4,.card h3,.legend h3,.edu-card h3{font-family:var(--
         <button class="phone p1" type="button" data-open="as" data-start="0" aria-label="Open Animal Sort Puzzle screens"><img src="ui/as-home-f.webp" alt="" width="760" height="1645"></button>
         <button class="phone p2" type="button" data-open="pp" data-start="2" aria-label="Open Pull the Pin screens"><img src="ui/pp-map-f.webp" alt="" width="760" height="1645"></button>
         <button class="phone p3" type="button" data-open="pw" data-start="2" aria-label="Open Pocket Warrior screens"><img src="ui/pw-home-f.webp" alt="" width="760" height="1645"></button>
-        <img class="photo" src="sumit.webp" alt="Sumit Maurya smiling, in a beige hoodie" width="760" height="938">
-        <div class="fade"></div>
-        <span class="shelf-note">Screens I designed. Tap one.</span>
+        <p class="shelf-note">Three of the 52 screens I designed. Tap one to open it.</p>
       </div>
     </div>
   </div>
@@ -650,7 +657,7 @@ h3,h4,.game h3,.soon-body h4,.card h3,.legend h3,.edu-card h3{font-family:var(--
       <div class="head">
         <div class="studio"><span class="logo-tile" role="img" aria-label="FunMint Games logo"></span><div class="txt"><b>FunMint Games</b><span class="label">My indie studio · Since Sep 2026</span></div></div>
         <h2>Games I made.</h2>
-        <p>Designed, built and published by me. Two are live on Google Play. Six more are coming.</p>
+        <p>Designed, built and published by me. Six are live on Google Play. Two more are coming.</p>
       </div>
       <div class="games">
         <a class="game" href="https://play.google.com/store/apps/dev?id=5886684719149194265" target="_blank" rel="noopener">
@@ -669,25 +676,41 @@ h3,h4,.game h3,.soon-body h4,.card h3,.legend h3,.edu-card h3{font-family:var(--
             <span class="go-row"><span class="go">Open on Google Play ↗</span><span class="plat"><img src="icon-play.webp" alt="" width="16" height="16">Android · Free</span></span>
           </div>
         </a>
+        <a class="game" href="https://play.google.com/store/apps/dev?id=5886684719149194265" target="_blank" rel="noopener">
+          <div class="art"><img src="game-color-bomb.webp" alt="Color Bomb Shooter banner: a purple cannon firing bombs at a wall of colour blocks" width="1024" height="500" loading="lazy"></div>
+          <div class="game-body">
+            <div class="game-top"><h3>Color Bomb Shooter</h3><div class="chips"><span class="chip new">New release</span></div></div>
+            <p>Aim the cannon and blast a wall of colour blocks.</p>
+            <span class="go-row"><span class="go">Open on Google Play ↗</span><span class="plat"><img src="icon-play.webp" alt="" width="16" height="16">Android · Free</span></span>
+          </div>
+        </a>
+        <a class="game" href="https://play.google.com/store/apps/dev?id=5886684719149194265" target="_blank" rel="noopener">
+          <div class="art"><img src="game-liondoku.webp" alt="LionDoku banner: a lion with a trophy next to a grid of paw tiles" width="1024" height="500" loading="lazy"></div>
+          <div class="game-body">
+            <div class="game-top"><h3>LionDoku</h3><div class="chips"><span class="chip new">New release</span></div></div>
+            <p>A brain puzzle on a grid of paw tiles, with a lion cheering you on.</p>
+            <span class="go-row"><span class="go">Open on Google Play ↗</span><span class="plat"><img src="icon-play.webp" alt="" width="16" height="16">Android · Free</span></span>
+          </div>
+        </a>
+        <a class="game" href="https://play.google.com/store/apps/dev?id=5886684719149194265" target="_blank" rel="noopener">
+          <div class="art"><img src="game-apextorque.webp" alt="ApexTorque banner: red and yellow muscle cars drifting through a tunnel" width="1024" height="500" loading="lazy"></div>
+          <div class="game-body">
+            <div class="game-top"><h3>ApexTorque</h3><div class="chips"><span class="chip new">New release</span></div></div>
+            <p>Muscle cars, tunnels and tight corners.</p>
+            <span class="go-row"><span class="go">Open on Google Play ↗</span><span class="plat"><img src="icon-play.webp" alt="" width="16" height="16">Android · Free</span></span>
+          </div>
+        </a>
+        <a class="game" href="https://play.google.com/store/apps/dev?id=5886684719149194265" target="_blank" rel="noopener">
+          <div class="art"><img src="game-gunblade.webp" alt="Gunblade Legends banner: a hooded hero with a sword and pistol facing a giant orc" width="1024" height="500" loading="lazy"></div>
+          <div class="game-body">
+            <div class="game-top"><h3>Gunblade Legends</h3><div class="chips"><span class="chip new">New release</span></div></div>
+            <p>A hooded hero with a sword and a pistol against giant orcs.</p>
+            <span class="go-row"><span class="go">Open on Google Play ↗</span><span class="plat"><img src="icon-play.webp" alt="" width="16" height="16">Android · Free</span></span>
+          </div>
+        </a>
       </div>
-      <div class="soon-head"><h3>Coming soon</h3><span class="count">6 GAMES</span></div>
+      <div class="soon-head"><h3>Coming soon</h3><span class="count">2 GAMES</span></div>
       <div class="soon">
-        <article class="soon-card">
-          <div class="art"><span class="ribbon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>COMING SOON</span><img src="game-color-bomb.webp" alt="Color Bomb Shooter banner: Cannon firing bombs at a wall of colourful blocks" width="1024" height="500" loading="lazy"></div>
-          <div class="soon-body"><h4>Color Bomb Shooter</h4><div class="meta"><span class="genre">Shooter · Puzzle</span><span class="where"><img src="icon-play.webp" alt="" width="14" height="14">Coming to Google Play</span></div></div>
-        </article>
-        <article class="soon-card">
-          <div class="art"><span class="ribbon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>COMING SOON</span><img src="game-liondoku.webp" alt="LionDoku banner: A cartoon lion holding a trophy beside a grid of paw tiles" width="1024" height="500" loading="lazy"></div>
-          <div class="soon-body"><h4>LionDoku</h4><div class="meta"><span class="genre">Brain puzzle</span><span class="where"><img src="icon-play.webp" alt="" width="14" height="14">Coming to Google Play</span></div></div>
-        </article>
-        <article class="soon-card">
-          <div class="art"><span class="ribbon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>COMING SOON</span><img src="game-apextorque.webp" alt="ApexTorque banner: Red and yellow muscle cars drifting through a tunnel" width="1024" height="500" loading="lazy"></div>
-          <div class="soon-body"><h4>ApexTorque</h4><div class="meta"><span class="genre">Racing</span><span class="where"><img src="icon-play.webp" alt="" width="14" height="14">Coming to Google Play</span></div></div>
-        </article>
-        <article class="soon-card">
-          <div class="art"><span class="ribbon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>COMING SOON</span><img src="game-gunblade.webp" alt="Gunblade Legends banner: A hooded hero with a sword and pistol facing a giant orc" width="1024" height="500" loading="lazy"></div>
-          <div class="soon-body"><h4>Gunblade Legends</h4><div class="meta"><span class="genre">Action</span><span class="where"><img src="icon-play.webp" alt="" width="14" height="14">Coming to Google Play</span></div></div>
-        </article>
         <article class="soon-card">
           <div class="art"><span class="ribbon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>COMING SOON</span><img src="game-block-colour.webp" alt="Block Colour Puzzle banner: smiling orange, red and blue block characters riding a block" width="1024" height="500" loading="lazy"></div>
           <div class="soon-body"><h4>Block Colour Puzzle</h4><div class="meta"><span class="genre">Block puzzle</span><span class="where"><img src="icon-play.webp" alt="" width="14" height="14">Coming to Google Play</span></div></div>
@@ -982,7 +1005,7 @@ h3,h4,.game h3,.soon-body h4,.card h3,.legend h3,.edu-card h3{font-family:var(--
     {name:'Funcell Games',role:'UI Designer',time:'Dec 2025 – 30 Sep 2026',short:"'25 – Sep '26",icon:'ui',
      text:'Designed in-game UI: HUD, main menu, shop/IAP, offer popups, rewards and settings. Built 9-slice buttons, panels and icons with all states for Unity, and handed off specs to developers.',skills:['HUD & menus','Shop & IAP','9-slice UI','Unity handoff']},
     {name:'FunMint Games',role:'Indie Game Developer',time:'30 Sep 2026 – now',short:'Sep ’26 – now',icon:'play',now:true,
-     text:'My own studio. I design, build and publish my own mobile games on Google Play: 2 live, 6 coming soon.',skills:['Game design','Game UI','Publishing']}
+     text:'My own studio. I design, build and publish my own mobile games on Google Play: 6 live, 2 coming soon.',skills:['Game design','Game UI','Publishing']}
   ];
   var LAYOUT={
     wide:{vb:'0 0 1000 460',ratio:'1000/460',
